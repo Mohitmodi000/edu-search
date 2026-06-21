@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduSearch — Book a Seat</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/class_seat.css' %}">
+</head>
+<body>
+
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<div class="page-shell">
+
+  <!-- NAV -->
+  <nav class="top-nav">
+    <a href="#" class="brand-lockup">
+      <svg class="brand-gem" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="52" height="52" rx="13" fill="url(#lb)"/>
+        <rect x=".5" y=".5" width="51" height="51" rx="12.5" stroke="url(#ls)" stroke-opacity=".5"/>
+        <path d="M10 34 Q10 19 26 17 Q42 19 42 34" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+        <line x1="26" y1="17" x2="26" y2="37" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M10 34 Q14 32 19 33 Q22 33.5 26 37" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.5)" stroke-width="1"/>
+        <path d="M42 34 Q38 32 33 33 Q30 33.5 26 37" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.5)" stroke-width="1"/>
+        <circle cx="34" cy="22" r="6.5" stroke="url(#gr)" stroke-width="2.2" fill="rgba(255,255,255,.06)"/>
+        <line x1="38.6" y1="26.6" x2="43" y2="31" stroke="url(#gh)" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="32.5" cy="20.5" r="1.3" fill="rgba(255,255,255,.55)"/>
+        <path d="M16 19 L16.6 21 L18.6 21 L17 22.2 L17.6 24.2 L16 23 L14.4 24.2 L15 22.2 L13.4 21 L15.4 21 Z" fill="url(#gs)" opacity=".85"/>
+        <defs>
+          <linearGradient id="lb" x1="0" y1="0" x2="52" y2="52" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#1a4f82"/><stop offset="100%" stop-color="#0c2d4e"/></linearGradient>
+          <linearGradient id="ls" x1="0" y1="0" x2="52" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#c49a2b" stop-opacity=".8"/><stop offset="50%" stop-color="white" stop-opacity=".15"/><stop offset="100%" stop-color="#c49a2b" stop-opacity=".3"/></linearGradient>
+          <linearGradient id="gr" x1="27.5" y1="15.5" x2="40.5" y2="28.5" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#f0d98a"/><stop offset="100%" stop-color="#c49a2b"/></linearGradient>
+          <linearGradient id="gh" x1="38.6" y1="26.6" x2="43" y2="31" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#f0d98a"/><stop offset="100%" stop-color="#a07820"/></linearGradient>
+          <linearGradient id="gs" x1="13.4" y1="19" x2="18.6" y2="24.2" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#f0d98a"/><stop offset="100%" stop-color="#c49a2b"/></linearGradient>
+        </defs>
+      </svg>
+      <span class="brand-name">Edu<span>Search</span></span>
+    </a>
+    <a href="{% url 'link' %}" class="nav-back"><i class="bi bi-arrow-left"></i> Back</a>
+  </nav>
+
+  <div class="content-area">
+    <div class="content-inner">
+
+      <!-- Title -->
+      <div class="page-title-row">
+        <div class="eyebrow"><i class="bi bi-ticket-perforated-fill me-1"></i> Seat Booking</div>
+        <h1>Reserve a <em>Class Seat</em></h1>
+        <p>Select a class, pick an available seat and confirm your child's enrollment.</p>
+        <div class="gold-bar"></div>
+      </div>
+
+      <!-- Step 1 – Class selector -->
+      <div class="class-selector-card">
+        <div class="section-label">
+          <i class="bi bi-mortarboard-fill"></i>
+          Step 1 — Choose a Class
+        </div>
+        <div class="class-pills" id="class-pills">
+          <!-- rendered by JS from classData -->
+        </div>
+      </div>
+
+      <!-- Step 2+3 – Seat map + Booking form -->
+      <div class="main-grid">
+
+        <!-- Seat map -->
+        <div class="seat-map-card">
+          <div class="section-label" style="margin-bottom:20px;">
+            <i class="bi bi-grid-3x3-gap-fill"></i>
+            Step 2 — Pick a Seat
+          </div>
+
+          <!-- Board -->
+          <div class="board-wrap">
+            <div class="blackboard">
+              <div class="blackboard-text" id="board-class-label">Select a class first</div>
+              <div class="blackboard-sub">Classroom View</div>
+            </div>
+            <div class="board-beam"></div>
+          </div>
+
+          <!-- Legend -->
+          <div class="legend">
+            <div class="legend-item"><div class="leg-box leg-available"></div> Available</div>
+            <div class="legend-item"><div class="leg-box leg-taken"></div> Taken</div>
+            <div class="legend-item"><div class="leg-box leg-selected"></div> Your Pick</div>
+          </div>
+
+          <!-- Seats -->
+          <div class="classroom-wrap">
+            <div class="classroom" id="seat-grid">
+              <div style="text-align:center;padding:32px 20px;color:var(--ink-muted);font-size:14px;">
+                <i class="bi bi-arrow-up-circle" style="font-size:28px;display:block;margin-bottom:8px;opacity:.4;"></i>
+                Please select a class above to view available seats
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+
+          <!-- Class info -->
+          <div class="info-card">
+            <div class="info-card-title"><i class="bi bi-info-circle-fill"></i> Class Info</div>
+            <div class="info-row">
+              <span class="lbl">Class</span>
+              <span class="val" id="info-class">—</span>
+            </div>
+            <div class="info-row">
+              <span class="lbl">Total Seats</span>
+              <span class="val" id="info-total">—</span>
+            </div>
+            <div class="info-row">
+              <span class="lbl">Available</span>
+              <span class="val green" id="info-avail">—</span>
+            </div>
+            <div class="info-row">
+              <span class="lbl">Taken</span>
+              <span class="val red" id="info-taken">—</span>
+            </div>
+            <div class="info-row" style="border-bottom:none;padding-bottom:0;">
+              <span class="lbl">Your Seat</span>
+              <span class="val gold" id="info-seat">None</span>
+            </div>
+            <div class="avail-bar-wrap">
+              <div class="avail-bar-label">
+                <span>Occupancy</span>
+                <span id="bar-pct">0%</span>
+              </div>
+              <div class="avail-bar-bg"><div class="avail-bar-fill" id="avail-bar" style="width:0%"></div></div>
+            </div>
+          </div>
+
+          <!-- Booking form -->
+          <div class="booking-card">
+            <div class="info-card-title"><i class="bi bi-person-lines-fill"></i> Step 3 — Your Details</div>
+
+            <form id="booking-form" action="" method="post">
+              <input type="hidden" name="csrfmiddlewaretoken" value="">
+              <input type="hidden" name="selected_class" id="field-class">
+              <input type="hidden" name="seat_number"    id="field-seat">
+
+              <div class="mb-3">
+                <label class="form-label-custom">Parent Name <span class="req">*</span></label>
+                <input class="form-control-custom" type="text" name="parent_name" placeholder="Full name" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label-custom">Child's Name <span class="req">*</span></label>
+                <input class="form-control-custom" type="text" name="child_name" placeholder="Child's full name" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label-custom">Phone Number <span class="req">*</span></label>
+                <input class="form-control-custom" type="tel" name="phone" placeholder="+91 00000 00000" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label-custom">Email</label>
+                <input class="form-control-custom" type="email" name="email" placeholder="you@example.com">
+              </div>
+
+              <div class="mb-1">
+                <label class="form-label-custom">Selected Seat</label>
+                <div id="seat-chip-wrap">
+                  <div class="no-seat-msg"><i class="bi bi-cursor-fill me-1"></i>Click a seat on the map</div>
+                </div>
+              </div>
+
+              <button type="submit" class="btn-book" id="book-btn" disabled>
+                <i class="bi bi-ticket-perforated-fill"></i>
+                Confirm Booking
+              </button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Success overlay -->
+<div class="success-overlay" id="success-overlay">
+  <div class="success-box">
+    <div class="success-ring">🎓</div>
+    <h3>Seat Booked!</h3>
+    <p>Your child's seat has been successfully reserved. Here's your booking summary.</p>
+    <div class="ticket">
+      <div class="ticket-row"><span class="tl">Class</span>     <span class="tv" id="t-class">—</span></div>
+      <div class="ticket-row"><span class="tl">Seat No.</span>  <span class="tv" id="t-seat">—</span></div>
+      <div class="ticket-row"><span class="tl">Child</span>     <span class="tv" id="t-child">—</span></div>
+      <div class="ticket-row"><span class="tl">Parent</span>    <span class="tv" id="t-parent">—</span></div>
+      <div class="ticket-row"><span class="tl">Status</span>    <span class="tv" style="color:var(--success)">✓ Confirmed</span></div>
+    </div>
+    <button class="btn-close-success" onclick="closeSuccess()">Done</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'css/class_seat.js' %}"></script>
+</body>
+</html>

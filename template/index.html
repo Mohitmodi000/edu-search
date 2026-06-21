@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduSearch — Register Your School</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0d1b2a;
+    --ink-soft: #3a4f65;
+    --ink-muted: #8096ab;
+    --paper: #f5f3ef;
+    --paper-warm: #ede9e1;
+    --white: #ffffff;
+    --gold: #c49a2b;
+    --gold-light: #f0d98a;
+    --gold-pale: #fdf8ec;
+    --navy: #0f2d4a;
+    --navy-mid: #1c4670;
+    --navy-light: #e8eff6;
+    --success: #1a7a4a;
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 22px;
+    --radius-xl: 32px;
+    --shadow-sm: 0 2px 12px rgba(13,27,42,0.08);
+    --shadow-md: 0 8px 32px rgba(13,27,42,0.12);
+    --shadow-lg: 0 24px 64px rgba(13,27,42,0.16);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ===== ANIMATED BG ===== */
+  .bg-orbs {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.18;
+    filter: blur(80px);
+    animation: drift 18s ease-in-out infinite;
+  }
+  .orb-1 {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, #1c4670, transparent);
+    top: -200px; left: -200px;
+    animation-delay: 0s;
+  }
+  .orb-2 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, #c49a2b, transparent);
+    top: 40%; right: -150px;
+    animation-delay: -6s;
+  }
+  .orb-3 {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, #0f2d4a, transparent);
+    bottom: -100px; left: 30%;
+    animation-delay: -12s;
+  }
+  @keyframes drift {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(40px, -30px) scale(1.05); }
+    66% { transform: translate(-20px, 40px) scale(0.97); }
+  }
+
+  /* ===== LAYOUT ===== */
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 360px 1fr;
+  }
+
+  /* ===== LEFT PANEL ===== */
+  .panel-left {
+    background: var(--navy);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 48px 40px;
+    overflow: hidden;
+  }
+
+  .panel-left::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(196,154,43,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(28,70,112,0.4) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .panel-left::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(180deg, transparent, rgba(196,154,43,0.4) 40%, rgba(196,154,43,0.4) 60%, transparent);
+  }
+
+  .brand-lockup {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 64px;
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .brand-gem {
+    width: 52px; height: 52px;
+    flex-shrink: 0;
+    filter: drop-shadow(0 4px 14px rgba(196,154,43,0.45));
+  }
+
+  .brand-name {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 20px;
+    color: #fff;
+    letter-spacing: 0.3px;
+  }
+
+  .brand-name span {
+    color: var(--gold);
+  }
+
+  .panel-headline {
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .panel-headline h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    font-weight: 800;
+    line-height: 1.15;
+    color: #fff;
+    margin-bottom: 16px;
+  }
+
+  .panel-headline h1 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .panel-headline p {
+    font-size: 15px;
+    color: rgba(255,255,255,0.62);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .divider-gold {
+    width: 48px; height: 2px;
+    background: var(--gold);
+    border-radius: 2px;
+    margin: 28px 0;
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.6s 0.15s ease both;
+  }
+
+  .step-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: relative;
+    z-index: 1;
+    margin-top: auto;
+    padding-bottom: 8px;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 0;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: 0.2s;
+  }
+
+  .step-dot {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.2);
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.4);
+    flex-shrink: 0;
+    transition: 0.3s;
+  }
+
+  .step-item.active .step-dot {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--navy);
+    box-shadow: 0 0 0 4px rgba(196,154,43,0.2);
+  }
+
+  .step-item.done .step-dot {
+    background: var(--success);
+    border-color: var(--success);
+    color: #fff;
+  }
+
+  .step-label {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.4);
+    transition: 0.3s;
+  }
+
+  .step-item.active .step-label { color: #fff; }
+  .step-item.done .step-label { color: rgba(255,255,255,0.6); }
+
+  .step-connector {
+    width: 1px; height: 18px;
+    background: rgba(255,255,255,0.1);
+    margin-left: 15px;
+  }
+
+  /* ===== RIGHT PANEL ===== */
+  .panel-right {
+    padding: 52px 56px 72px;
+    overflow-y: auto;
+    background: var(--paper);
+  }
+
+  /* ===== PROGRESS BAR ===== */
+  .progress-track {
+    height: 3px;
+    background: var(--paper-warm);
+    border-radius: 2px;
+    margin-bottom: 48px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--navy-mid));
+    border-radius: 2px;
+    transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    width: 0%;
+  }
+
+  /* ===== FORM STEPS ===== */
+  .form-step {
+    display: none;
+    animation: stepIn 0.5s cubic-bezier(0.34, 1.2, 0.64, 1) both;
+  }
+
+  .form-step.active { display: block; }
+
+  @keyframes stepIn {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .step-header {
+    margin-bottom: 36px;
+  }
+
+  .step-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--navy-light);
+    color: var(--navy-mid);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 5px 14px;
+    border-radius: 100px;
+    margin-bottom: 14px;
+  }
+
+  .step-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .step-header p {
+    font-size: 15px;
+    color: var(--ink-muted);
+    font-weight: 300;
+  }
+
+  /* ===== FORM ELEMENTS ===== */
+  .field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .field-group.full { grid-column: 1 / -1; }
+
+  .field-label {
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .field-label .req {
+    color: var(--gold);
+    margin-left: 3px;
+  }
+
+  .field-input,
+  .field-select,
+  .field-textarea {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1.5px solid var(--paper-warm);
+    border-radius: var(--radius-md);
+    background: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .field-input::placeholder,
+  .field-textarea::placeholder { color: var(--ink-muted); }
+
+  .field-input:hover,
+  .field-select:hover,
+  .field-textarea:hover {
+    border-color: #c8d4de;
+  }
+
+  .field-input:focus,
+  .field-select:focus,
+  .field-textarea:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 4px rgba(196,154,43,0.12);
+    transform: translateY(-1px);
+  }
+
+  .field-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238096ab' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 40px;
+    cursor: pointer;
+  }
+
+  .field-textarea {
+    min-height: 120px;
+    resize: vertical;
+    line-height: 1.6;
+  }
+
+  /* Address row */
+  .addr-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+  }
+
+  .detect-btn {
+    background: var(--navy-light);
+    border: 1.5px solid #d0dce8;
+    border-radius: var(--radius-md);
+    padding: 0 18px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy-mid);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .detect-btn:hover {
+    background: #dce8f4;
+    border-color: #bccfe3;
+  }
+
+  /* Star rating */
+  .star-rating {
+    display: flex;
+    gap: 6px;
+    padding: 10px 0;
+  }
+
+  .star {
+    font-size: 28px;
+    cursor: pointer;
+    color: #d4cfc8;
+    transition: color 0.15s, transform 0.15s;
+    user-select: none;
+    line-height: 1;
+  }
+
+  .star:hover, .star.lit { color: var(--gold); }
+  .star:hover { transform: scale(1.2); }
+  .star.lit { filter: drop-shadow(0 2px 4px rgba(196,154,43,0.3)); }
+
+  /* Upload zone */
+  .upload-zone {
+    border: 2px dashed #c8d4de;
+    border-radius: var(--radius-md);
+    padding: 32px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.25s;
+    background: var(--white);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .upload-zone:hover, .upload-zone.dragging {
+    border-color: var(--gold);
+    background: var(--gold-pale);
+  }
+
+  .upload-zone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+  }
+
+  .upload-icon {
+    width: 56px; height: 56px;
+    background: var(--navy-light);
+    border-radius: var(--radius-md);
+    margin: 0 auto 14px;
+    display: grid;
+    place-items: center;
+  }
+
+  .upload-icon svg { opacity: 0.6; }
+
+  .upload-zone h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .upload-zone p {
+    font-size: 13px;
+    color: var(--ink-muted);
+  }
+
+  .upload-zone .badge-types {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .type-badge {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    border-radius: 100px;
+    background: var(--navy-light);
+    color: var(--navy-mid);
+  }
+
+  #preview-img {
+    max-width: 120px;
+    max-height: 120px;
+    border-radius: var(--radius-md);
+    object-fit: cover;
+    margin: 12px auto 0;
+    display: none;
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* ===== CERT UPLOAD ZONE ===== */
+  .cert-upload-zone {
+    border: 2px dashed #c8d4de;
+    border-radius: var(--radius-md);
+    padding: 28px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.25s;
+    background: var(--white);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cert-upload-zone:hover, .cert-upload-zone.dragging {
+    border-color: var(--gold);
+    background: var(--gold-pale);
+  }
+
+  .cert-upload-zone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+  }
+
+  .cert-upload-zone h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .cert-upload-zone p {
+    font-size: 13px;
+    color: var(--ink-muted);
+  }
+
+  .cert-file-name {
+    margin-top: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--success);
+    display: none;
+  }
+
+  .cert-file-name::before {
+    content: '📎 ';
+  }
+
+  /* ===== NAVIGATION BUTTONS ===== */
+  .form-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 40px;
+    padding-top: 28px;
+    border-top: 1px solid var(--paper-warm);
+  }
+
+  .btn-back {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: 1.5px solid var(--paper-warm);
+    border-radius: var(--radius-md);
+    padding: 12px 22px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .btn-back:hover {
+    border-color: #c8d4de;
+    color: var(--ink);
+    transform: translateX(-2px);
+  }
+
+  .btn-next {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--navy);
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 14px 32px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.25s;
+    box-shadow: 0 8px 24px rgba(15,45,74,0.28);
+    position: relative;
+    overflow: hidden;
+  }
+
+  #a { text-decoration: none; }
+
+  .btn-next::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 40%, rgba(196,154,43,0.18));
+    opacity: 0;
+    transition: 0.3s;
+  }
+
+  .btn-next:hover::before { opacity: 1; }
+  .btn-next:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(15,45,74,0.34); }
+
+  .btn-submit {
+    background: linear-gradient(135deg, var(--gold) 0%, #a07820 100%);
+    color: var(--ink);
+    box-shadow: 0 8px 24px rgba(196,154,43,0.36);
+  }
+
+  .btn-submit:hover { box-shadow: 0 12px 32px rgba(196,154,43,0.48); }
+  .btn-submit::before { background: none; }
+
+  .arrow-icon {
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s;
+  }
+
+  .btn-next:hover .arrow-icon { transform: translateX(3px); }
+
+  /* ===== SUCCESS STATE ===== */
+  .success-screen {
+    display: none;
+    text-align: center;
+    padding: 40px 20px;
+    animation: stepIn 0.6s cubic-bezier(0.34, 1.2, 0.64, 1) both;
+  }
+
+  .success-screen.visible { display: block; }
+
+  .success-ring {
+    width: 96px; height: 96px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold-pale), #fdefc0);
+    border: 3px solid var(--gold);
+    display: grid;
+    place-items: center;
+    margin: 0 auto 28px;
+    animation: popIn 0.5s 0.2s cubic-bezier(0.34, 1.6, 0.64, 1) both;
+  }
+
+  @keyframes popIn {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .success-screen h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 34px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+
+  .success-screen p {
+    font-size: 16px;
+    color: var(--ink-muted);
+    font-weight: 300;
+    max-width: 420px;
+    margin: 0 auto 32px;
+    line-height: 1.7;
+  }
+
+  /* ===== FIELD HINT ===== */
+  .field-hint {
+    font-size: 12px;
+    color: var(--ink-muted);
+    font-weight: 400;
+  }
+
+  /* ===== CARD SELECT ===== */
+  .board-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .board-card {
+    padding: 16px;
+    border: 1.5px solid var(--paper-warm);
+    border-radius: var(--radius-md);
+    background: var(--white);
+    cursor: pointer;
+    text-align: center;
+    transition: 0.2s;
+    position: relative;
+  }
+
+  .board-card:hover {
+    border-color: var(--gold);
+    background: var(--gold-pale);
+  }
+
+  .board-card.selected {
+    border-color: var(--gold);
+    background: var(--gold-pale);
+    box-shadow: 0 0 0 3px rgba(196,154,43,0.15);
+  }
+
+  .board-card .check {
+    position: absolute;
+    top: 8px; right: 8px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--gold);
+    display: none;
+    place-items: center;
+  }
+
+  .board-card.selected .check { display: grid; }
+
+  .board-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 3px;
+  }
+
+  .board-desc {
+    font-size: 12px;
+    color: var(--ink-muted);
+  }
+
+  .board-icon {
+    font-size: 26px;
+    margin-bottom: 8px;
+  }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* stagger children */
+  .field-group:nth-child(1) { animation-delay: 0.05s; }
+  .field-group:nth-child(2) { animation-delay: 0.10s; }
+  .field-group:nth-child(3) { animation-delay: 0.15s; }
+  .field-group:nth-child(4) { animation-delay: 0.20s; }
+  .field-group:nth-child(5) { animation-delay: 0.25s; }
+  .field-group:nth-child(6) { animation-delay: 0.30s; }
+  .field-group:nth-child(7) { animation-delay: 0.35s; }
+  .field-group:nth-child(8) { animation-delay: 0.40s; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 860px) {
+    .wrapper { grid-template-columns: 1fr; }
+    .panel-left {
+      position: relative;
+      height: auto;
+      padding: 32px 28px 28px;
+    }
+    .panel-left h1 { font-size: 28px; }
+    .step-nav { display: none; }
+    .panel-right { padding: 32px 24px 56px; }
+    .field-grid { grid-template-columns: 1fr; }
+    .board-cards { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 560px) {
+    .form-nav { flex-direction: column-reverse; gap: 12px; }
+    .btn-next, .btn-back { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<div class="wrapper">
+
+  <!-- ===== LEFT PANEL ===== -->
+  <aside class="panel-left">
+    <div class="brand-lockup">
+      <svg class="brand-gem" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="52" height="52" rx="13" fill="url(#logoBase)"/>
+        <rect x="0.5" y="0.5" width="51" height="51" rx="12.5" stroke="url(#logoShine)" stroke-opacity="0.5"/>
+        <path d="M10 34 Q10 19 26 17 Q42 19 42 34" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+        <line x1="26" y1="17" x2="26" y2="37" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M10 34 Q14 32 19 33 Q22 33.5 26 37" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+        <path d="M42 34 Q38 32 33 33 Q30 33.5 26 37" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+        <circle cx="34" cy="22" r="6.5" stroke="url(#goldRing)" stroke-width="2.2" fill="rgba(255,255,255,0.06)"/>
+        <line x1="38.6" y1="26.6" x2="43" y2="31" stroke="url(#goldHandle)" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="32.5" cy="20.5" r="1.3" fill="rgba(255,255,255,0.55)"/>
+        <path d="M16 19 L16.6 21 L18.6 21 L17 22.2 L17.6 24.2 L16 23 L14.4 24.2 L15 22.2 L13.4 21 L15.4 21 Z" fill="url(#goldStar)" opacity="0.85"/>
+        <defs>
+          <linearGradient id="logoBase" x1="0" y1="0" x2="52" y2="52" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#1a4f82"/>
+            <stop offset="100%" stop-color="#0c2d4e"/>
+          </linearGradient>
+          <linearGradient id="logoShine" x1="0" y1="0" x2="52" y2="0" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#c49a2b" stop-opacity="0.8"/>
+            <stop offset="50%" stop-color="white" stop-opacity="0.15"/>
+            <stop offset="100%" stop-color="#c49a2b" stop-opacity="0.3"/>
+          </linearGradient>
+          <linearGradient id="goldRing" x1="27.5" y1="15.5" x2="40.5" y2="28.5" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#f0d98a"/>
+            <stop offset="100%" stop-color="#c49a2b"/>
+          </linearGradient>
+          <linearGradient id="goldHandle" x1="38.6" y1="26.6" x2="43" y2="31" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#f0d98a"/>
+            <stop offset="100%" stop-color="#a07820"/>
+          </linearGradient>
+          <linearGradient id="goldStar" x1="13.4" y1="19" x2="18.6" y2="24.2" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#f0d98a"/>
+            <stop offset="100%" stop-color="#c49a2b"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <span class="brand-name">Edu<span>Search</span></span>
+    </div>
+
+    <div class="panel-headline">
+      <h1>List your<br><em>school</em> with<br>confidence.</h1>
+      <div class="divider-gold"></div>
+      <p>Thousands of parents discover the right school every day. Be where they're looking.</p>
+    </div>
+
+    <nav class="step-nav" id="step-nav">
+      <div class="step-item active" data-step="1">
+        <div class="step-dot">1</div>
+        <span class="step-label">School Identity</span>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step-item" data-step="2">
+        <div class="step-dot">2</div>
+        <span class="step-label">Location & Board</span>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step-item" data-step="3">
+        <div class="step-dot">3</div>
+        <span class="step-label">Details & Media</span>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- ===== RIGHT PANEL ===== -->
+  <main class="panel-right">
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+
+    <form id="reg-form" action="" method="post" enctype="multipart/form-data">
+     {% csrf_token %}
+
+      <!-- ===== STEP 1: Identity ===== -->
+      <div class="form-step active" id="step-1">
+        <div class="step-header">
+          <div class="step-badge">Step 1 of 3</div>
+          <h2>School Identity</h2>
+          <p>Let's start with who you are — your school's name, leadership, and official codes.</p>
+        </div>
+
+        <div class="field-grid">
+          <div class="field-group full">
+            <label class="field-label">School Name <span class="req">*</span></label>
+            <input class="field-input" type="text" name="school_name" placeholder="e.g. Sunrise International School" required>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Owner / Principal <span class="req">*</span></label>
+            <input class="field-input" type="text" name="owner" placeholder="Full name" required>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Established Year <span class="req">*</span></label>
+            <input class="field-input" type="number" name="established_year" placeholder="e.g. 1998" min="1800" max="2099" required>
+          </div>
+
+          <!-- ── NEW: Affiliation Number ── -->
+          <div class="field-group">
+            <label class="field-label">Affiliation Number <span class="req">*</span></label>
+            <input class="field-input" type="text" name="affiliation_number" placeholder="e.g. 1234567" required>
+            <span class="field-hint">Board affiliation / registration number</span>
+          </div>
+
+          <!-- ── NEW: UDISE Code ── -->
+          <div class="field-group">
+            <label class="field-label">UDISE Code <span class="req">*</span></label>
+            <input class="field-input" type="text" name="udise_code" placeholder="11-digit UDISE code" maxlength="11" required>
+            <span class="field-hint">Unified District Information System for Education</span>
+          </div>
+
+          <div class="field-group full">
+            <label class="field-label">Official Website</label>
+            <input class="field-input" type="url" name="website_link" placeholder="https://www.yourschool.com">
+          </div>
+
+          <div class="field-group full">
+            <label class="field-label">School Description <span class="req">*</span></label>
+            <textarea class="field-textarea" name="description" placeholder="Tell parents what makes your school special — curriculum, facilities, achievements…" required></textarea>
+          </div>
+        </div>
+
+        <div class="form-nav">
+          <span></span>
+          <button type="button" class="btn-next" onclick="goTo(2)">
+            Continue
+            <span class="arrow-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ===== STEP 2: Location & Board ===== -->
+      <div class="form-step" id="step-2">
+        <div class="step-header">
+          <div class="step-badge">Step 2 of 3</div>
+          <h2>Location & Board</h2>
+          <p>Help parents find you on the map and understand your curriculum.</p>
+        </div>
+
+        <div class="field-grid">
+          <div class="field-group full">
+            <label class="field-label">Full Address <span class="req">*</span></label>
+            <div class="addr-row">
+              <input class="field-input" type="text" name="address" id="address-input" placeholder="Street address, area, landmark…" required>
+              <button type="button" class="detect-btn" id="get-location-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="8" stroke-dasharray="4 2" opacity="0.4"/></svg>
+                Detect
+              </button>
+            </div>
+            <input type="hidden" name="latitude" id="lat-input">
+            <input type="hidden" name="longitude" id="lng-input">
+            <span class="field-hint" id="loc-status"></span>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">City <span class="req">*</span></label>
+            <input class="field-input" type="text" name="city" placeholder="e.g. Mumbai" required>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">State</label>
+            <input class="field-input" type="text" name="state" placeholder="e.g. Maharashtra">
+          </div>
+
+          <div class="field-group full">
+            <label class="field-label">Curriculum Board <span class="req">*</span></label>
+            <div class="board-cards" id="board-cards">
+              <div class="board-card selected" data-val="cbse">
+                <div class="check">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="board-icon">🏛️</div>
+                <div class="board-name">CBSE</div>
+                <div class="board-desc">Central Board</div>
+              </div>
+              <div class="board-card" data-val="icse">
+                <div class="check">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="board-icon">📚</div>
+                <div class="board-name">ICSE</div>
+                <div class="board-desc">Indian Council</div>
+              </div>
+              <div class="board-card" data-val="state board">
+                <div class="check">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="board-icon">🏫</div>
+                <div class="board-name">State Board</div>
+                <div class="board-desc">State Curriculum</div>
+              </div>
+            </div>
+            <input type="hidden" name="board" id="board-input" value="cbse" required>
+          </div>
+        </div>
+
+        <div class="form-nav">
+          <button type="button" class="btn-back" onclick="goTo(1)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Back
+          </button>
+          <button type="button" class="btn-next" onclick="goTo(3)">
+            Continue
+            <span class="arrow-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ===== STEP 3: Details & Media ===== -->
+      <div class="form-step" id="step-3">
+        <div class="step-header">
+          <div class="step-badge">Step 3 of 3</div>
+          <h2>Rating & Media</h2>
+          <p>Final touches — rate your school, upload your logo, and attach your recognition certificate.</p>
+        </div>
+
+        <div class="field-grid">
+
+          <div class="field-group full">
+            <label class="field-label">Your School's Rating <span class="req">*</span></label>
+            <div class="star-rating" id="star-rating">
+              <span class="star" data-val="1">★</span>
+              <span class="star" data-val="2">★</span>
+              <span class="star" data-val="3">★</span>
+              <span class="star" data-val="4">★</span>
+              <span class="star" data-val="5">★</span>
+            </div>
+            <input type="hidden" name="rating" id="rating-input" value="">
+            <span class="field-hint" id="rating-label">Click a star to rate</span>
+          </div>
+
+          <div class="field-group full">
+            <label class="field-label">School Logo <span class="req">*</span></label>
+            <div class="upload-zone" id="upload-zone">
+              <input type="file" name="school_logo" id="logo-input" accept="image/*" required>
+              <div class="upload-icon">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1c4670" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </div>
+              <h4>Drop your logo here</h4>
+              <p>or click to browse your files</p>
+              <div class="badge-types">
+                <span class="type-badge">PNG</span>
+                <span class="type-badge">JPG</span>
+                <span class="type-badge">SVG</span>
+                <span class="type-badge">WebP</span>
+              </div>
+              <img id="preview-img" src="" alt="Logo preview">
+            </div>
+          </div>
+
+          <!-- ── NEW: Recognition Certificate ── -->
+          <div class="field-group full">
+            <label class="field-label">Recognition Certificate <span class="req">*</span></label>
+            <div class="cert-upload-zone" id="cert-upload-zone">
+              <input type="file" name="recognition_certificate" id="cert-input" accept=".pdf,.jpg,.jpeg,.png" required>
+              <div class="upload-icon">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1c4670" stroke-width="1.8">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="9" y1="13" x2="15" y2="13"/>
+                  <line x1="9" y1="17" x2="13" y2="17"/>
+                </svg>
+              </div>
+              <h4>Upload Recognition Certificate</h4>
+              <p>Government-issued school recognition document</p>
+              <div class="badge-types">
+                <span class="type-badge">PDF</span>
+                <span class="type-badge">JPG</span>
+                <span class="type-badge">PNG</span>
+              </div>
+              <div class="cert-file-name" id="cert-file-name"></div>
+            </div>
+            <span class="field-hint">Accepted: PDF, JPG, PNG — max 5 MB</span>
+          </div>
+
+        </div>
+
+        <div class="form-nav">
+          <button type="button" class="btn-back" onclick="goTo(2)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Back
+          </button>
+          <a href="{% url 'payment' %}" class="btn-next btn-submit">
+            Submit School
+            <span class="arrow-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+          ></a>
+        </div>
+      </div>
+    </form>
+
+    <!-- Success -->
+    <div class="success-screen" id="success-screen">
+      <div class="success-ring">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#c49a2b" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h2>School Registered!</h2>
+      <p>Your school profile is under review. We'll notify you once it's live on EduSearch — usually within 24 hours.</p>
+      <button class="btn-next" onclick="location.reload()">Register Another School</button>
+      <a href="{% url 'show' %}"><button class="btn-next">Main Page</button></a>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  const STEPS = 3;
+  let current = 1;
+
+  const labels = ['', 'Click a star to rate', 'Fair', 'Good', 'Great', 'Excellent'];
+
+  function goTo(n) {
+    document.getElementById(`step-${current}`).classList.remove('active');
+    document.getElementById(`step-${n}`).classList.add('active');
+    current = n;
+    updateUI();
+    document.querySelector('.panel-right').scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function updateUI() {
+    const pct = ((current - 1) / STEPS) * 100 + (100 / STEPS * 0.5);
+    document.getElementById('progress-fill').style.width = pct + '%';
+
+    document.querySelectorAll('#step-nav .step-item').forEach(item => {
+      const s = +item.dataset.step;
+      item.classList.toggle('active', s === current);
+      item.classList.toggle('done', s < current);
+    });
+  }
+
+  // Board card selection
+  document.querySelectorAll('.board-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.board-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      document.getElementById('board-input').value = card.dataset.val;
+    });
+  });
+
+  // Star rating
+  const stars = document.querySelectorAll('.star');
+  stars.forEach(star => {
+    star.addEventListener('click', () => {
+      const val = +star.dataset.val;
+      document.getElementById('rating-input').value = val;
+      document.getElementById('rating-label').textContent = labels[val] + ' — ' + val + '/5';
+      stars.forEach(s => s.classList.toggle('lit', +s.dataset.val <= val));
+    });
+    star.addEventListener('mouseenter', () => {
+      const val = +star.dataset.val;
+      stars.forEach(s => {
+        if (+s.dataset.val <= val) s.style.color = '#c49a2b';
+        else s.style.color = '';
+      });
+    });
+    star.addEventListener('mouseleave', () => {
+      stars.forEach(s => { s.style.color = ''; });
+      const cur = +document.getElementById('rating-input').value;
+      if (cur) stars.forEach(s => s.classList.toggle('lit', +s.dataset.val <= cur));
+    });
+  });
+
+  // Logo upload preview
+  document.getElementById('logo-input').addEventListener('change', function() {
+    const file = this.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.getElementById('preview-img');
+      img.src = e.target.result;
+      img.style.display = 'block';
+      document.querySelector('#upload-zone h4').textContent = file.name;
+      document.querySelector('#upload-zone p').textContent = (file.size / 1024).toFixed(0) + ' KB';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Drag over logo upload zone
+  const zone = document.getElementById('upload-zone');
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragging'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('dragging'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault(); zone.classList.remove('dragging');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+      document.getElementById('logo-input').files = e.dataTransfer.files;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const img = document.getElementById('preview-img');
+        img.src = ev.target.result; img.style.display = 'block';
+        zone.querySelector('h4').textContent = file.name;
+        zone.querySelector('p').textContent = (file.size / 1024).toFixed(0) + ' KB';
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Certificate upload — show file name on selection
+  document.getElementById('cert-input').addEventListener('change', function() {
+    const file = this.files[0];
+    if (!file) return;
+    const nameEl = document.getElementById('cert-file-name');
+    nameEl.textContent = file.name + ' (' + (file.size / 1024).toFixed(0) + ' KB)';
+    nameEl.style.display = 'block';
+    document.querySelector('#cert-upload-zone h4').textContent = 'Certificate Selected';
+    document.querySelector('#cert-upload-zone p').textContent = file.name;
+  });
+
+  // Drag over cert upload zone
+  const certZone = document.getElementById('cert-upload-zone');
+  certZone.addEventListener('dragover', e => { e.preventDefault(); certZone.classList.add('dragging'); });
+  certZone.addEventListener('dragleave', () => certZone.classList.remove('dragging'));
+  certZone.addEventListener('drop', e => {
+    e.preventDefault(); certZone.classList.remove('dragging');
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      document.getElementById('cert-input').files = e.dataTransfer.files;
+      const nameEl = document.getElementById('cert-file-name');
+      nameEl.textContent = file.name + ' (' + (file.size / 1024).toFixed(0) + ' KB)';
+      nameEl.style.display = 'block';
+      certZone.querySelector('h4').textContent = 'Certificate Selected';
+      certZone.querySelector('p').textContent = file.name;
+    }
+  });
+
+  // Geolocation
+  document.getElementById('get-location-btn').addEventListener('click', function() {
+    const btn = this;
+    const status = document.getElementById('loc-status');
+    if (!navigator.geolocation) { status.textContent = 'Geolocation not supported.'; return; }
+    btn.textContent = 'Detecting…';
+    btn.disabled = true;
+    navigator.geolocation.getCurrentPosition(pos => {
+      document.getElementById('lat-input').value = pos.coords.latitude.toFixed(6);
+      document.getElementById('lng-input').value = pos.coords.longitude.toFixed(6);
+      status.textContent = `📍 Location captured: ${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`;
+      status.style.color = '#1a7a4a';
+      btn.textContent = '✓ Detected';
+      btn.disabled = false;
+    }, () => {
+      status.textContent = 'Could not detect location. Please enter manually.';
+      btn.innerHTML = 'Detect';
+      btn.disabled = false;
+    });
+  });
+
+  // Form submit → show success
+  document.getElementById('reg-form').addEventListener('submit', function(e) {
+    this.style.display = 'none';
+    document.getElementById('success-screen').classList.add('visible');
+    document.getElementById('progress-fill').style.width = '100%';
+    document.querySelectorAll('#step-nav .step-item').forEach(i => i.classList.add('done'));
+  });
+
+  updateUI();
+</script>
+</body>
+</html>

@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduSearch — Registered Schools</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<style>
+  :root {
+    --navy:       #0f2d4a;
+    --navy-mid:   #1c4670;
+    --navy-light: #e8eff6;
+    --gold:       #c49a2b;
+    --gold-pale:  #fdf8ec;
+    --gold-light: #f0d98a;
+    --paper:      #f5f3ef;
+    --paper-warm: #ede9e1;
+    --white:      #ffffff;
+    --ink:        #0d1b2a;
+    --ink-soft:   #3a4f65;
+    --ink-muted:  #8096ab;
+    --success:    #1a7a4a;
+    --success-bg: #eaf5f0;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Animated orbs ── */
+  .bg-orbs { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .orb { position: absolute; border-radius: 50%; opacity: .15; filter: blur(80px); animation: drift 18s ease-in-out infinite; }
+  .orb-1 { width:600px; height:600px; background:radial-gradient(circle,#1c4670,transparent); top:-200px; left:-200px; animation-delay:0s; }
+  .orb-2 { width:500px; height:500px; background:radial-gradient(circle,#c49a2b,transparent); top:40%; right:-150px; animation-delay:-6s; }
+  .orb-3 { width:400px; height:400px; background:radial-gradient(circle,#0f2d4a,transparent); bottom:-100px; left:30%; animation-delay:-12s; }
+  @keyframes drift {
+    0%,100% { transform:translate(0,0) scale(1); }
+    33%      { transform:translate(40px,-30px) scale(1.05); }
+    66%      { transform:translate(-20px,40px) scale(.97); }
+  }
+
+  /* ── Page shell ── */
+  .page-shell { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; }
+
+  /* ── Top Nav ── */
+  .top-nav {
+    background: var(--navy);
+    padding: 14px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 20px rgba(13,27,42,.22);
+  }
+  .top-nav::after {
+    content:''; position:absolute; bottom:0; left:0; right:0; height:1px;
+    background:linear-gradient(90deg,transparent,rgba(196,154,43,.5) 30%,rgba(196,154,43,.5) 70%,transparent);
+  }
+
+  .brand-lockup { display:flex; align-items:center; gap:13px; text-decoration:none; }
+  .brand-gem    { width:42px; height:42px; flex-shrink:0; filter:drop-shadow(0 3px 10px rgba(196,154,43,.4)); }
+  .brand-name   { font-weight:600; font-size:18px; color:#fff; letter-spacing:.3px; }
+  .brand-name span { color:var(--gold); }
+
+  .nav-register {
+    display:inline-flex; align-items:center; gap:7px;
+    padding:9px 20px;
+    background:linear-gradient(135deg,var(--gold),#a07820);
+    border:none; border-radius:10px;
+    font-family:'DM Sans',sans-serif;
+    font-size:13.5px; font-weight:600; color:var(--ink);
+    text-decoration:none; transition:.2s;
+    box-shadow:0 4px 14px rgba(196,154,43,.35);
+  }
+  .nav-register:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(196,154,43,.45); color:var(--ink); }
+
+  /* ── Content ── */
+  .content-area { flex:1; padding: 44px 24px 72px; }
+  .content-inner { max-width: 1080px; margin: 0 auto; }
+
+  /* ── Page title row ── */
+  .page-title-row { margin-bottom: 32px; animation: fadeUp .5s ease both; }
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:6px;
+    background:var(--navy-light); color:var(--navy-mid);
+    font-size:11.5px; font-weight:600; text-transform:uppercase; letter-spacing:1px;
+    padding:5px 14px; border-radius:100px; margin-bottom:12px;
+  }
+  .page-title-row h1 {
+    font-family:'Playfair Display',serif;
+    font-size:34px; font-weight:800; color:var(--ink); line-height:1.2; margin-bottom:6px;
+  }
+  .page-title-row h1 em { font-style:italic; color:var(--gold); }
+  .page-title-row p  { font-size:15px; color:var(--ink-muted); font-weight:300; margin:0; }
+  .gold-bar { width:44px; height:2px; background:var(--gold); border-radius:2px; margin-top:14px; }
+
+  /* ── Stats strip ── */
+  .stats-strip {
+    display:flex; gap:14px; flex-wrap:wrap;
+    margin-bottom:28px;
+    animation: fadeUp .5s .06s ease both;
+  }
+  .stat-chip {
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--white); border:1px solid rgba(214,224,236,.8);
+    border-radius:12px; padding:10px 18px;
+    box-shadow:0 2px 10px rgba(13,27,42,.06);
+  }
+  .stat-chip-icon {
+    width:34px; height:34px; border-radius:9px;
+    background:var(--navy-light); display:grid; place-items:center;
+    font-size:15px; color:var(--navy-mid); flex-shrink:0;
+  }
+  .stat-chip-icon.gold-bg { background:var(--gold-pale); color:#a07820; }
+  .stat-chip-val { font-size:18px; font-weight:700; color:var(--ink); line-height:1; }
+  .stat-chip-lbl { font-size:12px; color:var(--ink-muted); font-weight:400; }
+
+  /* ── Search bar ── */
+  .search-bar-wrap {
+    margin-bottom:24px;
+    animation: fadeUp .5s .1s ease both;
+  }
+  .search-inner {
+    display:flex; gap:10px; flex-wrap:wrap;
+    background:var(--white);
+    border:1px solid rgba(214,224,236,.8);
+    border-radius:16px; padding:10px 14px;
+    box-shadow:0 4px 16px rgba(13,27,42,.07);
+    align-items:center;
+  }
+  .search-input-wrap { flex:1; min-width:200px; display:flex; align-items:center; gap:8px; }
+  .search-input-wrap i { font-size:16px; color:var(--ink-muted); }
+  .search-input {
+    border:none; outline:none; font-family:'DM Sans',sans-serif;
+    font-size:14.5px; color:var(--ink); background:transparent; width:100%;
+  }
+  .search-input::placeholder { color:var(--ink-muted); }
+  .filter-select {
+    border:1.5px solid var(--paper-warm); border-radius:10px;
+    padding:8px 32px 8px 12px; font-family:'DM Sans',sans-serif;
+    font-size:13.5px; color:var(--ink-soft); background:var(--paper);
+    outline:none; cursor:pointer; appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238096ab' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 10px center;
+    transition:.2s;
+  }
+  .filter-select:focus { border-color:var(--gold); }
+
+  /* ── Table card ── */
+  .table-card {
+    background: var(--white);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 36px rgba(13,27,42,.10);
+    border: 1px solid rgba(214,224,236,.7);
+    animation: fadeUp .5s .14s ease both;
+  }
+
+  .table-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--paper-warm);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 10px;
+  }
+  .table-header-title {
+    font-family:'Playfair Display',serif;
+    font-size:18px; font-weight:700; color:var(--ink);
+    display:flex; align-items:center; gap:10px;
+  }
+  .table-header-title i {
+    width:34px; height:34px; border-radius:9px;
+    background:var(--navy-light); display:grid; place-items:center;
+    font-size:15px; color:var(--navy-mid);
+  }
+  .count-badge {
+    background:var(--navy-light); color:var(--navy-mid);
+    font-size:12px; font-weight:600; padding:3px 10px; border-radius:100px;
+    font-family:'DM Sans',sans-serif;
+  }
+
+  /* ── Table ── */
+  .table-wrap { overflow-x: auto; }
+
+  table { width:100%; min-width:700px; border-collapse:collapse; }
+
+  thead th {
+    background: #f8f7f4;
+    color: var(--ink-muted);
+    font-family:'DM Sans',sans-serif;
+    font-size:11.5px; font-weight:600;
+    text-transform:uppercase; letter-spacing:.7px;
+    padding:13px 20px;
+    border-bottom:1px solid var(--paper-warm);
+    text-align:left; white-space:nowrap;
+  }
+  thead th:first-child { padding-left:24px; }
+  thead th:last-child  { padding-right:24px; text-align:center; }
+
+  tbody tr {
+    border-bottom:1px solid #f0ede8;
+    transition:background .18s, transform .18s;
+    animation: rowIn .4s ease both;
+  }
+  tbody tr:hover { background:#fdfcfa; }
+  tbody tr:last-child { border-bottom:none; }
+
+  @keyframes rowIn {
+    from { opacity:0; transform:translateX(-8px); }
+    to   { opacity:1; transform:translateX(0); }
+  }
+  /* stagger rows */
+  tbody tr:nth-child(1)  { animation-delay:.05s; }
+  tbody tr:nth-child(2)  { animation-delay:.10s; }
+  tbody tr:nth-child(3)  { animation-delay:.15s; }
+  tbody tr:nth-child(4)  { animation-delay:.20s; }
+  tbody tr:nth-child(5)  { animation-delay:.25s; }
+  tbody tr:nth-child(6)  { animation-delay:.30s; }
+  tbody tr:nth-child(n+7){ animation-delay:.35s; }
+
+  tbody td {
+    padding:14px 20px;
+    font-size:14.5px; color:var(--ink);
+    vertical-align:middle;
+  }
+  tbody td:first-child { padding-left:24px; }
+  tbody td:last-child  { padding-right:24px; text-align:center; }
+
+  /* Logo */
+  .school-logo-wrap {
+    width:52px; height:52px;
+    border-radius:13px;
+    overflow:hidden; flex-shrink:0;
+    border:2px solid rgba(214,224,236,.8);
+    background:var(--navy-light);
+  }
+  .school-logo-wrap img { width:100%; height:100%; object-fit:cover; display:block; }
+  .logo-fallback {
+    width:100%; height:100%;
+    display:grid; place-items:center;
+    font-size:20px; color:var(--navy-mid);
+  }
+
+  /* School name cell */
+  .name-cell { display:flex; align-items:center; gap:14px; }
+  .name-text  { font-weight:600; font-size:15px; color:var(--ink); }
+  .city-text  { font-size:12.5px; color:var(--ink-muted); margin-top:2px; display:flex; align-items:center; gap:4px; }
+
+  /* City pill */
+  .city-pill {
+    display:inline-flex; align-items:center; gap:4px;
+    background:var(--navy-light); color:var(--navy-mid);
+    padding:4px 11px; border-radius:100px;
+    font-size:12.5px; font-weight:500;
+  }
+
+  /* Rating */
+  .rating-wrap { display:inline-flex; align-items:center; gap:7px; }
+  .rating-num  { font-size:15px; font-weight:700; color:var(--gold); }
+  .mini-stars  { display:flex; gap:1px; }
+  .mini-stars span { font-size:13px; }
+  .star-on  { color:var(--gold); }
+  .star-off { color:#ddd; }
+  .rating-bar-bg {
+    height:4px; width:64px; background:var(--paper-warm);
+    border-radius:4px; overflow:hidden;
+  }
+  .rating-bar-fill {
+    height:100%; border-radius:4px;
+    background:linear-gradient(90deg,var(--gold-light),var(--gold));
+  }
+
+  /* Board badge */
+  .board-badge {
+    display:inline-flex; align-items:center; gap:5px;
+    padding:4px 12px; border-radius:100px;
+    font-size:12px; font-weight:700;
+    text-transform:uppercase; letter-spacing:.4px; white-space:nowrap;
+  }
+  .board-cbse    { background:#e8f0fb; color:#1a4fa0; }
+  .board-icse    { background:#fef3e2; color:#a05e0a; }
+  .board-state   { background:#ecfaf1; color:#1a6b3c; }
+  .board-default { background:var(--navy-light); color:var(--navy-mid); }
+
+  /* Details button */
+  .btn-details {
+    display:inline-flex; align-items:center; gap:7px;
+    padding:9px 18px;
+    background:var(--navy);
+    border:none; border-radius:11px;
+    font-family:'DM Sans',sans-serif;
+    font-size:13px; font-weight:600; color:#fff;
+    text-decoration:none; transition:.22s;
+    box-shadow:0 4px 14px rgba(15,45,74,.22);
+    position:relative; overflow:hidden;
+  }
+  .btn-details::before {
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(135deg,transparent 50%,rgba(196,154,43,.2));
+    opacity:0; transition:.2s;
+  }
+  .btn-details:hover::before { opacity:1; }
+  .btn-details:hover {
+    transform:translateY(-2px);
+    box-shadow:0 8px 22px rgba(15,45,74,.3);
+    color:#fff;
+  }
+  .btn-details .arrow-icon { display:flex; align-items:center; transition:transform .2s; }
+  .btn-details:hover .arrow-icon { transform:translateX(3px); }
+
+  /* ── Empty state ── */
+  .empty-row td { padding:56px 20px !important; }
+  .empty-state { text-align:center; }
+  .empty-icon {
+    width:72px; height:72px; border-radius:50%;
+    background:var(--navy-light); display:grid; place-items:center;
+    margin:0 auto 16px;
+    font-size:28px; color:var(--navy-mid);
+  }
+  .empty-state h4 { font-family:'Playfair Display',serif; font-size:20px; color:var(--ink); margin-bottom:6px; }
+  .empty-state p  { font-size:14px; color:var(--ink-muted); font-weight:300; }
+
+  /* ── Pagination strip ── */
+  .pagination-strip {
+    padding:16px 24px;
+    border-top:1px solid var(--paper-warm);
+    display:flex; align-items:center; justify-content:space-between;
+    flex-wrap:wrap; gap:10px;
+  }
+  .page-info { font-size:13px; color:var(--ink-muted); }
+  .page-btns { display:flex; gap:6px; }
+  .page-btn {
+    width:34px; height:34px; border-radius:9px;
+    display:grid; place-items:center;
+    border:1.5px solid var(--paper-warm);
+    background:var(--white); color:var(--ink-soft);
+    font-size:13px; font-weight:600; cursor:pointer;
+    transition:.18s; font-family:'DM Sans',sans-serif;
+  }
+  .page-btn:hover  { border-color:var(--gold); color:var(--gold); }
+  .page-btn.active { background:var(--navy); border-color:var(--navy); color:#fff; }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(16px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  @media (max-width:768px) {
+    .content-area { padding:28px 14px 56px; }
+    .top-nav { padding:12px 16px; }
+    .stats-strip { display:none; }
+    .page-title-row h1 { font-size:27px; }
+    .search-inner { flex-direction:column; align-items:stretch; }
+    .filter-select { width:100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<div class="page-shell">
+
+  <!-- ── TOP NAV ── -->
+  <nav class="top-nav">
+    <a href="#" class="brand-lockup">
+      <svg class="brand-gem" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="52" height="52" rx="13" fill="url(#lb)"/>
+        <rect x=".5" y=".5" width="51" height="51" rx="12.5" stroke="url(#ls)" stroke-opacity=".5"/>
+        <path d="M10 34 Q10 19 26 17 Q42 19 42 34" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+        <line x1="26" y1="17" x2="26" y2="37" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M10 34 Q14 32 19 33 Q22 33.5 26 37" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.5)" stroke-width="1"/>
+        <path d="M42 34 Q38 32 33 33 Q30 33.5 26 37" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.5)" stroke-width="1"/>
+        <circle cx="34" cy="22" r="6.5" stroke="url(#gr)" stroke-width="2.2" fill="rgba(255,255,255,.06)"/>
+        <line x1="38.6" y1="26.6" x2="43" y2="31" stroke="url(#gh)" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="32.5" cy="20.5" r="1.3" fill="rgba(255,255,255,.55)"/>
+        <path d="M16 19 L16.6 21 L18.6 21 L17 22.2 L17.6 24.2 L16 23 L14.4 24.2 L15 22.2 L13.4 21 L15.4 21 Z" fill="url(#gs)" opacity=".85"/>
+        <defs>
+          <linearGradient id="lb" x1="0" y1="0" x2="52" y2="52" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#1a4f82"/><stop offset="100%" stop-color="#0c2d4e"/>
+          </linearGradient>
+          <linearGradient id="ls" x1="0" y1="0" x2="52" y2="0" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#c49a2b" stop-opacity=".8"/>
+            <stop offset="50%" stop-color="white"  stop-opacity=".15"/>
+            <stop offset="100%" stop-color="#c49a2b" stop-opacity=".3"/>
+          </linearGradient>
+          <linearGradient id="gr" x1="27.5" y1="15.5" x2="40.5" y2="28.5" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#f0d98a"/><stop offset="100%" stop-color="#c49a2b"/>
+          </linearGradient>
+          <linearGradient id="gh" x1="38.6" y1="26.6" x2="43" y2="31" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#f0d98a"/><stop offset="100%" stop-color="#a07820"/>
+          </linearGradient>
+          <linearGradient id="gs" x1="13.4" y1="19" x2="18.6" y2="24.2" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#f0d98a"/><stop offset="100%" stop-color="#c49a2b"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <span class="brand-name">Edu<span>Search</span></span>
+    </a>
+    <a href="{% url 'parent' %}" class="nav-register">
+      <i class="bi bi-plus-lg"></i> parent profile
+    </a>
+  </nav>
+
+  <!-- ── CONTENT ── -->
+  <div class="content-area">
+    <div class="content-inner">
+
+      <!-- Title -->
+      <div class="page-title-row">
+        <div class="eyebrow"><i class="bi bi-buildings-fill me-1"></i> Directory</div>
+        <h1>Registered <em>Schools</em></h1>
+        <p>Browse all school profiles and view detailed information in one click.</p>
+        <div class="gold-bar"></div>
+      </div>
+
+      <!-- Stats strip -->
+      <div class="stats-strip">
+        <div class="stat-chip">
+          <div class="stat-chip-icon"><i class="bi bi-buildings"></i></div>
+          <div>
+            <div class="stat-chip-val" id="total-count">—</div>
+            <div class="stat-chip-lbl">Schools Listed</div>
+          </div>
+        </div>
+        <div class="stat-chip">
+          <div class="stat-chip-icon gold-bg"><i class="bi bi-star-fill"></i></div>
+          <div>
+            <div class="stat-chip-val" id="avg-rating">—</div>
+            <div class="stat-chip-lbl">Avg. Rating</div>
+          </div>
+        </div>
+        <div class="stat-chip">
+          <div class="stat-chip-icon"><i class="bi bi-geo-alt-fill"></i></div>
+          <div>
+            <div class="stat-chip-val" id="city-count">—</div>
+            <div class="stat-chip-lbl">Cities</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search & filter -->
+      <div class="search-bar-wrap">
+        <div class="search-inner">
+          <div class="search-input-wrap">
+            <i class="bi bi-search"></i>
+            <input class="search-input" id="search-input" type="text" placeholder="Search schools by name or city…">
+          </div>
+          <select class="filter-select" id="filter-board">
+            <option value="">All Boards</option>
+            <option value="cbse">CBSE</option>
+            <option value="icse">ICSE</option>
+            <option value="state board">State Board</option>
+          </select>
+          <select class="filter-select" id="sort-rating">
+            <option value="">Sort by Rating</option>
+            <option value="desc">Highest First</option>
+            <option value="asc">Lowest First</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Table card -->
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-header-title">
+            <i class="bi bi-table"></i>
+            All Schools
+          </div>
+          <span class="count-badge" id="shown-count">Loading…</span>
+        </div>
+
+        <div class="table-wrap">
+          <table id="schools-table">
+            <thead>
+              <tr>
+                <th>School</th>
+                <th>City</th>
+                <th>Board</th>
+                <th>Rating</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody id="table-body">
+
+              {% for s in school %}
+              <tr
+                data-name="{{ s.school_name|lower }}"
+                data-city="{{ s.city|lower }}"
+                data-board="{{ s.board|lower }}"
+                data-rating="{{ s.rating }}"
+              >
+                <!-- School name + logo -->
+                <td>
+                  <div class="name-cell">
+                    <div class="school-logo-wrap">
+                      {% if s.school_logo %}
+                        <img src="{{ s.school_logo.url }}" alt="{{ s.school_name }}">
+                      {% else %}
+                        <div class="logo-fallback"><i class="bi bi-building"></i></div>
+                      {% endif %}
+                    </div>
+                    <div>
+                      <div class="name-text">{{ s.school_name }}</div>
+                      <div class="city-text"><i class="bi bi-geo-alt"></i>{{ s.city }}</div>
+                    </div>
+                  </div>
+                </td>
+
+                <!-- City -->
+                <td>
+                  <span class="city-pill">
+                    <i class="bi bi-building"></i> {{ s.city }}
+                  </span>
+                </td>
+
+                <!-- Board -->
+                <td>
+                  {% if s.board == "cbse" or s.board == "CBSE" %}
+                    <span class="board-badge board-cbse"><i class="bi bi-award-fill"></i> CBSE</span>
+                  {% elif s.board == "icse" or s.board == "ICSE" %}
+                    <span class="board-badge board-icse"><i class="bi bi-award-fill"></i> ICSE</span>
+                  {% elif s.board == "state board" or s.board == "State Board" %}
+                    <span class="board-badge board-state"><i class="bi bi-award-fill"></i> State Board</span>
+                  {% else %}
+                    <span class="board-badge board-default"><i class="bi bi-award-fill"></i> {{ s.board }}</span>
+                  {% endif %}
+                </td>
+
+                <!-- Rating -->
+                <td>
+                  <div class="rating-wrap">
+                    <span class="rating-num">{{ s.rating }}</span>
+                    <div>
+                      <div class="rating-bar-bg">
+                        <div class="rating-bar-fill" style= "width: 0; "{{ s.rating|floatformat:1 }}></div>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+
+                <!-- Details -->
+                <td>
+                  <a class="btn-details" href="{% url 'link' %}">
+                    View
+                    <span class="arrow-icon"><i class="bi bi-arrow-right" style="font-size:13px;"></i></span>
+                  </a>
+                </td>
+              </tr>
+
+              {% empty %}
+              <tr class="empty-row">
+                <td colspan="5">
+                  <div class="empty-state">
+                    <div class="empty-icon"><i class="bi bi-buildings-fill"></i></div>
+                    <h4>No Schools Found</h4>
+                    <p>No school profiles have been registered yet.<br>Be the first to add your school!</p>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-strip">
+          <span class="page-info" id="page-info">Showing all results</span>
+          <div class="page-btns" id="page-btns"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // ── Live search + filter + sort ──
+  const searchInput  = document.getElementById('search-input');
+  const filterBoard  = document.getElementById('filter-board');
+  const sortRating   = document.getElementById('sort-rating');
+  const tbody        = document.getElementById('table-body');
+  const shownCount   = document.getElementById('shown-count');
+  const pageInfo     = document.getElementById('page-info');
+
+  const allRows = Array.from(tbody.querySelectorAll('tr[data-name]'));
+
+  // Stats
+  const totalEl  = document.getElementById('total-count');
+  const avgEl    = document.getElementById('avg-rating');
+  const cityEl   = document.getElementById('city-count');
+
+  if (allRows.length) {
+    totalEl.textContent = allRows.length;
+    const ratings = allRows.map(r => parseFloat(r.dataset.rating) || 0);
+    avgEl.textContent   = (ratings.reduce((a,b)=>a+b,0)/ratings.length).toFixed(1);
+    const cities = new Set(allRows.map(r => r.dataset.city));
+    cityEl.textContent  = cities.size;
+  } else {
+    totalEl.textContent = '0';
+    avgEl.textContent   = '—';
+    cityEl.textContent  = '0';
+  }
+
+  function applyFilters() {
+    const q     = searchInput.value.toLowerCase().trim();
+    const board = filterBoard.value.toLowerCase();
+    const sort  = sortRating.value;
+
+    let visible = allRows.filter(row => {
+      const matchQ     = !q || row.dataset.name.includes(q) || row.dataset.city.includes(q);
+      const matchBoard = !board || row.dataset.board.includes(board);
+      return matchQ && matchBoard;
+    });
+
+    if (sort === 'desc') visible.sort((a,b) => parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating));
+    if (sort === 'asc')  visible.sort((a,b) => parseFloat(a.dataset.rating) - parseFloat(b.dataset.rating));
+
+    // Hide all, show matching
+    allRows.forEach(r => r.style.display = 'none');
+    visible.forEach(r => { r.style.display = ''; });
+
+    const cnt = visible.length;
+    shownCount.textContent = cnt + ' school' + (cnt !== 1 ? 's' : '');
+    pageInfo.textContent   = 'Showing ' + cnt + ' of ' + allRows.length + ' schools';
+  }
+
+  searchInput.addEventListener('input',  applyFilters);
+  filterBoard.addEventListener('change', applyFilters);
+  sortRating.addEventListener('change',  applyFilters);
+
+  // Initial count
+  if (allRows.length) {
+    shownCount.textContent = allRows.length + ' school' + (allRows.length !== 1 ? 's' : '');
+    pageInfo.textContent   = 'Showing all ' + allRows.length + ' schools';
+  } else {
+    shownCount.textContent = '0 schools';
+    pageInfo.textContent   = 'No schools listed yet';
+  }
+</script>
+</body>
+</html>

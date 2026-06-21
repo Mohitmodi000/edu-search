@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduSearch | Sign In Choice</title>
+    <style>
+        :root {
+            --bg-1: #eef6ff;
+            --bg-2: #dae9ff;
+            --card: #ffffff;
+            --line: #d8e5f4;
+            --text: #10253c;
+            --muted: #5e768f;
+            --brand: #135fa8;
+            --brand-2: #2e79c0;
+            --accent: #f59f00;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 20px;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at 15% 10%, #ffffff 0%, rgba(255, 255, 255, 0) 34%),
+                linear-gradient(135deg, var(--bg-1), var(--bg-2));
+        }
+
+        .card {
+            width: min(760px, 100%);
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 16px 34px rgba(20, 63, 102, 0.14);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .brand-gem {
+            width: 52px;
+            height: 52px;
+            flex-shrink: 0;
+            filter: drop-shadow(0 4px 14px rgba(196,154,43,0.35));
+        }
+
+        .brand span {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--brand);
+            letter-spacing: 0.2px;
+        }
+
+        h1 {
+            margin: 6px 0 8px;
+            font-size: 30px;
+            line-height: 1.2;
+        }
+
+        p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        .choices {
+            margin-top: 22px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .choice {
+            display: block;
+            text-decoration: none;
+            border: 1px solid #d5e3f2;
+            border-radius: 14px;
+            padding: 16px;
+            background: #f9fcff;
+            transition: 0.2s ease;
+        }
+
+        .choice:hover {
+            transform: translateY(-2px);
+            border-color: #a9c7e7;
+            box-shadow: 0 10px 18px rgba(20, 63, 102, 0.1);
+        }
+
+        .choice h2 {
+            margin: 0 0 6px;
+            font-size: 20px;
+            color: #17375a;
+        }
+
+        .choice p {
+            font-size: 14px;
+        }
+
+        .owner { border-left: 5px solid var(--brand-2); }
+        .user { border-left: 5px solid var(--accent); }
+
+        @media (max-width: 700px) {
+            h1 { font-size: 24px; }
+            .choices { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <main class="card">
+        <div class="brand">
+            <svg class="brand-gem" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="EduSearch logo">
+                <rect width="52" height="52" rx="13" fill="url(#logoBase)"/>
+                <rect x="0.5" y="0.5" width="51" height="51" rx="12.5" stroke="url(#logoShine)" stroke-opacity="0.5"/>
+                <path d="M10 34 Q10 19 26 17 Q42 19 42 34" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+                <line x1="26" y1="17" x2="26" y2="37" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
+                <path d="M10 34 Q14 32 19 33 Q22 33.5 26 37" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+                <path d="M42 34 Q38 32 33 33 Q30 33.5 26 37" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+                <circle cx="34" cy="22" r="6.5" stroke="url(#goldRing)" stroke-width="2.2" fill="rgba(255,255,255,0.06)"/>
+                <line x1="38.6" y1="26.6" x2="43" y2="31" stroke="url(#goldHandle)" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="32.5" cy="20.5" r="1.3" fill="rgba(255,255,255,0.55)"/>
+                <path d="M16 19 L16.6 21 L18.6 21 L17 22.2 L17.6 24.2 L16 23 L14.4 24.2 L15 22.2 L13.4 21 L15.4 21 Z" fill="url(#goldStar)" opacity="0.85"/>
+                <defs>
+                    <linearGradient id="logoBase" x1="0" y1="0" x2="52" y2="52" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#1a4f82"/>
+                        <stop offset="100%" stop-color="#0c2d4e"/>
+                    </linearGradient>
+                    <linearGradient id="logoShine" x1="0" y1="0" x2="52" y2="0" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#c49a2b" stop-opacity="0.8"/>
+                        <stop offset="50%" stop-color="white" stop-opacity="0.15"/>
+                        <stop offset="100%" stop-color="#c49a2b" stop-opacity="0.3"/>
+                    </linearGradient>
+                    <linearGradient id="goldRing" x1="27.5" y1="15.5" x2="40.5" y2="28.5" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#f0d98a"/>
+                        <stop offset="100%" stop-color="#c49a2b"/>
+                    </linearGradient>
+                    <linearGradient id="goldHandle" x1="38.6" y1="26.6" x2="43" y2="31" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#f0d98a"/>
+                        <stop offset="100%" stop-color="#a07820"/>
+                    </linearGradient>
+                    <linearGradient id="goldStar" x1="13.4" y1="19" x2="18.6" y2="24.2" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#f0d98a"/>
+                        <stop offset="100%" stop-color="#c49a2b"/>
+                    </linearGradient>
+                </defs>
+            </svg>
+            <span>EduSearch</span>
+        </div>
+        <h1>Are you a School Owner or a User?</h1>
+        <p>Choose your role to continue to the right experience.</p>
+
+        <section class="choices">
+            <a class="choice owner" href="/resister">
+                <h2>School Owner</h2>
+                <p>Register your school, upload logo, and manage details.</p>
+            </a>
+            <a class="choice user" href="{% url 'parent_login' %}">
+                <h2>parent</h2>
+                <p>Browse listed schools and explore their profiles.</p>
+            </a>
+        </section>
+    </main>
+</body>
+</html>

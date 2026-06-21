@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduSearch — School Listing Payment</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<style>
+  :root {
+    --navy:       #0f2d4a;
+    --navy-mid:   #1c4670;
+    --navy-light: #e8eff6;
+    --gold:       #c49a2b;
+    --gold-pale:  #fdf8ec;
+    --gold-light: #f0d98a;
+    --paper:      #f5f3ef;
+    --paper-warm: #ede9e1;
+    --white:      #ffffff;
+    --ink:        #0d1b2a;
+    --ink-soft:   #3a4f65;
+    --ink-muted:  #8096ab;
+    --success:    #1a7a4a;
+    --success-bg: #eaf5f0;
+    --danger:     #c0392b;
+    --danger-bg:  #fdecea;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; overflow-x: hidden; }
+
+  /* ── Orbs ── */
+  .bg-orbs { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .orb { position: absolute; border-radius: 50%; opacity: .14; filter: blur(80px); animation: drift 18s ease-in-out infinite; }
+  .orb-1 { width:600px;height:600px;background:radial-gradient(circle,#1c4670,transparent);top:-200px;left:-200px; }
+  .orb-2 { width:500px;height:500px;background:radial-gradient(circle,#c49a2b,transparent);top:40%;right:-150px;animation-delay:-6s; }
+  .orb-3 { width:400px;height:400px;background:radial-gradient(circle,#0f2d4a,transparent);bottom:-100px;left:30%;animation-delay:-12s; }
+  @keyframes drift{0%,100%{transform:translate(0,0)scale(1)}33%{transform:translate(40px,-30px)scale(1.05)}66%{transform:translate(-20px,40px)scale(.97)}}
+
+  .page-shell { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; }
+
+  /* ── Nav ── */
+  .top-nav { background:var(--navy);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(13,27,42,.22); }
+  .top-nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(196,154,43,.5)30%,rgba(196,154,43,.5)70%,transparent);}
+  .brand-lockup{display:flex;align-items:center;gap:13px;text-decoration:none;}
+  .brand-gem{width:42px;height:42px;flex-shrink:0;filter:drop-shadow(0 3px 10px rgba(196,154,43,.4));}
+  .brand-name{font-weight:600;font-size:18px;color:#fff;}
+  .brand-name span{color:var(--gold);}
+  .nav-back{display:inline-flex;align-items:center;gap:7px;padding:8px 18px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;font-size:13.5px;font-weight:500;color:rgba(255,255,255,.82);text-decoration:none;transition:.2s;font-family:'DM Sans',sans-serif;}
+  .nav-back:hover{background:rgba(255,255,255,.15);border-color:rgba(196,154,43,.4);color:#fff;}
+
+  /* ── Layout ── */
+  .content-area { flex:1; padding:48px 24px 80px; }
+  .content-inner { max-width:1060px; margin:0 auto; }
+
+  /* ── Page title ── */
+  .page-title-row { margin-bottom:36px; animation:fadeUp .5s ease both; }
+  .eyebrow { display:inline-flex;align-items:center;gap:6px;background:var(--navy-light);color:var(--navy-mid);font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:1px;padding:5px 14px;border-radius:100px;margin-bottom:12px; }
+  .page-title-row h1 { font-family:'Playfair Display',serif;font-size:34px;font-weight:800;color:var(--ink);line-height:1.2;margin-bottom:6px; }
+  .page-title-row h1 em { font-style:italic;color:var(--gold); }
+  .page-title-row p { font-size:15px;color:var(--ink-muted);font-weight:300;margin:0; }
+  .gold-bar { width:44px;height:2px;background:var(--gold);border-radius:2px;margin-top:14px; }
+
+  /* ── Progress stepper ── */
+  .stepper { display:flex;align-items:center;margin-bottom:40px;animation:fadeUp .5s .06s ease both; }
+  .step-node { display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;z-index:1; }
+  .step-circle { width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-size:15px;font-weight:700;transition:.3s;border:2px solid transparent; }
+  .step-circle.done   { background:var(--success);color:#fff;border-color:var(--success);box-shadow:0 0 0 4px rgba(26,122,74,.15); }
+  .step-circle.active { background:var(--gold);color:var(--navy);border-color:var(--gold);box-shadow:0 0 0 4px rgba(196,154,43,.2); }
+  .step-circle.idle   { background:var(--white);color:var(--ink-muted);border-color:var(--paper-warm); }
+  .step-lbl { font-size:11.5px;font-weight:600;color:var(--ink-muted);white-space:nowrap; }
+  .step-lbl.active { color:var(--navy-mid); }
+  .step-lbl.done   { color:var(--success); }
+  .step-line { flex:1;height:2px;background:var(--paper-warm);margin:0 6px;margin-bottom:20px;transition:.4s;position:relative;overflow:hidden; }
+  .step-line.done::after { content:'';position:absolute;inset:0;background:linear-gradient(90deg,var(--success),var(--gold));animation:fillLine .6s ease both; }
+  @keyframes fillLine{from{width:0}to{width:100%}}
+
+  /* ── Main grid ── */
+  .main-grid { display:grid;grid-template-columns:1fr 360px;gap:24px; }
+
+  /* ── Plan cards ── */
+  .plans-row { display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px;animation:fadeUp .5s .1s ease both; }
+  .plan-card {
+    border:2px solid var(--paper-warm);border-radius:18px;
+    background:var(--white);padding:22px 20px;
+    cursor:pointer;transition:.25s;position:relative;overflow:hidden;
+  }
+  .plan-card::before { content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 60%,rgba(196,154,43,.04));pointer-events:none; }
+  .plan-card:hover { border-color:rgba(196,154,43,.5);transform:translateY(-3px);box-shadow:0 12px 32px rgba(13,27,42,.1); }
+  .plan-card.selected { border-color:var(--gold);background:var(--gold-pale);box-shadow:0 0 0 4px rgba(196,154,43,.15),0 12px 32px rgba(13,27,42,.1); }
+  .plan-popular-badge {
+    position:absolute;top:0;right:0;
+    background:linear-gradient(135deg,var(--gold),#a07820);
+    color:var(--navy);font-size:10.5px;font-weight:700;
+    padding:4px 14px 4px 10px;border-radius:0 16px 0 12px;
+    text-transform:uppercase;letter-spacing:.5px;
+  }
+  .plan-check { position:absolute;top:12px;left:12px;width:22px;height:22px;border-radius:50%;background:var(--gold);display:none;place-items:center; }
+  .plan-card.selected .plan-check { display:grid; }
+  .plan-icon { width:52px;height:52px;border-radius:14px;margin-bottom:14px;display:grid;place-items:center;font-size:22px; }
+  .plan-icon.basic    { background:#eaf0fb;color:#1a4fa0; }
+  .plan-icon.standard { background:var(--gold-pale);color:#a07820; }
+  .plan-icon.premium  { background:linear-gradient(135deg,var(--navy),var(--navy-mid));color:var(--gold); }
+  .plan-name { font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--ink);margin-bottom:4px; }
+  .plan-price { font-size:28px;font-weight:800;color:var(--navy);line-height:1;margin-bottom:2px; }
+  .plan-price sup { font-size:14px;font-weight:600;vertical-align:super; }
+  .plan-price span { font-size:13px;font-weight:400;color:var(--ink-muted); }
+  .plan-period { font-size:12px;color:var(--ink-muted);margin-bottom:14px; }
+  .plan-features { display:flex;flex-direction:column;gap:7px; }
+  .plan-feat { font-size:13px;color:var(--ink-soft);display:flex;align-items:center;gap:7px; }
+  .plan-feat i { font-size:12px;color:var(--success);flex-shrink:0; }
+  .plan-feat.no i { color:#ccc; }
+  .plan-feat.no  { color:var(--ink-muted); }
+
+  /* ── Payment form card ── */
+  .pay-form-card { background:var(--white);border-radius:20px;box-shadow:0 6px 28px rgba(13,27,42,.09);border:1px solid rgba(214,224,236,.7);overflow:hidden;animation:fadeUp .5s .14s ease both; }
+  .pay-form-header { background:linear-gradient(135deg,var(--navy),var(--navy-mid));padding:22px 28px;position:relative;overflow:hidden; }
+  .pay-form-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 60%,rgba(196,154,43,.14) 0%,transparent 55%);pointer-events:none;}
+  .pay-form-header::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.05)1px,transparent 1px);background-size:18px 18px;pointer-events:none;}
+  .pay-form-header h3 { font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#fff;position:relative;z-index:1;margin-bottom:4px; }
+  .pay-form-header p  { font-size:13.5px;color:rgba(255,255,255,.6);position:relative;z-index:1;margin:0;font-weight:300; }
+  .pay-form-body { padding:28px; }
+
+  /* field */
+  .f-label { font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-soft);margin-bottom:7px;display:block; }
+  .f-label .req { color:var(--gold); }
+  .f-wrap { position:relative; }
+  .f-icon { position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--ink-muted);pointer-events:none;transition:.2s; }
+  .f-input {
+    width:100%;padding:12px 14px 12px 42px;
+    border:1.5px solid var(--paper-warm);border-radius:12px;
+    font-family:'DM Sans',sans-serif;font-size:14.5px;color:var(--ink);
+    background:var(--white);outline:none;transition:.2s;letter-spacing:.3px;
+  }
+  .f-input::placeholder { color:var(--ink-muted);letter-spacing:0; }
+  .f-input:focus { border-color:var(--gold);box-shadow:0 0 0 4px rgba(196,154,43,.12);transform:translateY(-1px); }
+  .f-input:focus ~ .f-icon { color:var(--gold); }
+  .f-input.no-icon { padding-left:14px; }
+  .f-input.error   { border-color:var(--danger); }
+  .f-input.error:focus { box-shadow:0 0 0 4px rgba(192,57,43,.1); }
+  .f-error { font-size:12px;color:var(--danger);margin-top:4px;display:none; }
+  .f-error.show { display:block; }
+
+  /* Card number formatting */
+  .card-brands { position:absolute;right:12px;top:50%;transform:translateY(-50%);display:flex;gap:5px; }
+  .card-brand-icon { width:30px;height:20px;border-radius:4px;background:var(--paper);border:1px solid var(--paper-warm);display:grid;place-items:center;font-size:10px;font-weight:700;color:var(--ink-muted);transition:.2s; }
+  .card-brand-icon.active { background:var(--navy-light);color:var(--navy-mid);border-color:#bccfe3; }
+
+  /* Method tabs */
+  .method-tabs { display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:24px; }
+  .method-tab {
+    padding:12px 8px;border:1.5px solid var(--paper-warm);border-radius:12px;
+    background:var(--white);cursor:pointer;text-align:center;transition:.2s;
+    display:flex;flex-direction:column;align-items:center;gap:5px;
+    font-family:'DM Sans',sans-serif;
+  }
+  .method-tab:hover { border-color:var(--gold);background:var(--gold-pale); }
+  .method-tab.active { border-color:var(--gold);background:var(--gold-pale);box-shadow:0 0 0 3px rgba(196,154,43,.12); }
+  .method-tab i { font-size:20px; }
+  .method-tab span { font-size:11.5px;font-weight:600;color:var(--ink-soft); }
+  .method-tab.active span { color:var(--navy-mid); }
+  .method-tab i.card-icon  { color:#1a4fa0; }
+  .method-tab i.upi-icon   { color:#6739b7; }
+  .method-tab i.net-icon   { color:var(--navy-mid); }
+  .method-tab i.wallet-icon{ color:#e07820; }
+
+  /* UPI section */
+  .upi-section { display:none; }
+  .upi-section.show { display:block; }
+  .upi-apps { display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px; }
+  .upi-app {
+    display:flex;align-items:center;gap:8px;
+    padding:10px 16px;border:1.5px solid var(--paper-warm);border-radius:11px;
+    background:var(--white);cursor:pointer;transition:.2s;font-size:13px;font-weight:600;color:var(--ink-soft);
+  }
+  .upi-app:hover   { border-color:var(--gold);background:var(--gold-pale); }
+  .upi-app.active  { border-color:var(--gold);background:var(--gold-pale);color:var(--navy-mid); }
+  .upi-app .upi-dot{ width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-size:14px;font-weight:700;color:#fff; }
+
+  /* Card section */
+  .card-section { display:none; }
+  .card-section.show { display:block; }
+
+  /* Net banking section */
+  .net-section { display:none; }
+  .net-section.show { display:block; }
+  .bank-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px; }
+  .bank-chip { border:1.5px solid var(--paper-warm);border-radius:10px;padding:10px 6px;background:var(--white);cursor:pointer;text-align:center;transition:.2s;font-size:11.5px;font-weight:600;color:var(--ink-soft); }
+  .bank-chip:hover  { border-color:var(--gold);background:var(--gold-pale); }
+  .bank-chip.active { border-color:var(--gold);background:var(--gold-pale);color:var(--navy-mid); }
+  .bank-chip .bk-icon { font-size:20px;margin-bottom:4px;display:block; }
+
+  /* Wallet section */
+  .wallet-section { display:none; }
+  .wallet-section.show { display:block; }
+  .wallet-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:10px; }
+  .wallet-item { border:1.5px solid var(--paper-warm);border-radius:12px;padding:14px 10px;background:var(--white);cursor:pointer;text-align:center;transition:.2s;font-size:12.5px;font-weight:600;color:var(--ink-soft); }
+  .wallet-item:hover  { border-color:var(--gold);background:var(--gold-pale); }
+  .wallet-item.active { border-color:var(--gold);background:var(--gold-pale);color:var(--navy-mid); }
+  .wallet-item .wlt-icon { font-size:24px;margin-bottom:6px;display:block; }
+
+  /* Pay button */
+  .btn-pay {
+    width:100%;padding:15px;margin-top:20px;
+    background:linear-gradient(135deg,var(--gold) 0%,#a07820 100%);
+    border:none;border-radius:13px;
+    font-family:'DM Sans',sans-serif;font-size:15.5px;font-weight:700;color:var(--ink);
+    cursor:pointer;transition:.25s;position:relative;overflow:hidden;
+    box-shadow:0 8px 26px rgba(196,154,43,.38);
+    display:flex;align-items:center;justify-content:center;gap:10px;
+  }
+  .btn-pay::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);opacity:0;transition:.3s;}
+  .btn-pay:hover::before{opacity:1;}
+  .btn-pay:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(196,154,43,.5);}
+  .btn-pay:disabled{opacity:.55;cursor:not-allowed;transform:none;}
+  .spinner{width:18px;height:18px;border:2.5px solid rgba(13,27,42,.2);border-top-color:var(--navy);border-radius:50%;animation:spin .7s linear infinite;display:none;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* Secure badges */
+  .secure-row { display:flex;justify-content:center;align-items:center;gap:16px;margin-top:14px;flex-wrap:wrap; }
+  .secure-badge { display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--ink-muted); }
+  .secure-badge i { font-size:13px; }
+
+  /* ── ORDER SUMMARY (sidebar) ── */
+  .summary-card { background:var(--white);border-radius:20px;box-shadow:0 6px 28px rgba(13,27,42,.09);border:1px solid rgba(214,224,236,.7);overflow:hidden;animation:fadeUp .5s .18s ease both;position:sticky;top:88px; }
+  .summary-banner { background:linear-gradient(135deg,var(--navy),var(--navy-mid));padding:18px 22px;position:relative;overflow:hidden; }
+  .summary-banner::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.05)1px,transparent 1px);background-size:16px 16px;pointer-events:none;}
+  .summary-banner h4 { font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:#fff;position:relative;z-index:1;margin-bottom:2px; }
+  .summary-banner p  { font-size:12.5px;color:rgba(255,255,255,.55);position:relative;z-index:1;margin:0; }
+  .summary-body { padding:20px; }
+
+  /* School mini card */
+  .school-mini { display:flex;align-items:center;gap:12px;padding:14px;background:var(--paper);border-radius:14px;margin-bottom:16px;border:1px solid var(--paper-warm); }
+  .school-mini-logo { width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--navy),var(--navy-mid));display:grid;place-items:center;font-family:'Playfair Display',serif;font-weight:700;font-size:18px;color:#fff;flex-shrink:0; }
+  .school-mini-name { font-size:14.5px;font-weight:600;color:var(--ink); }
+  .school-mini-loc  { font-size:12px;color:var(--ink-muted);margin-top:2px;display:flex;align-items:center;gap:4px; }
+
+  /* Selected plan highlight */
+  .selected-plan-row { background:var(--gold-pale);border:1.5px solid rgba(196,154,43,.3);border-radius:12px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between; }
+  .selected-plan-name { font-size:14.5px;font-weight:600;color:var(--navy); }
+  .selected-plan-price { font-size:20px;font-weight:800;color:var(--gold); }
+
+  /* Price breakdown */
+  .price-row { display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--paper-warm);font-size:13.5px; }
+  .price-row:last-of-type { border-bottom:none; }
+  .price-row .lbl { color:var(--ink-muted); }
+  .price-row .val { font-weight:600;color:var(--ink); }
+  .price-row.total { padding-top:14px;margin-top:4px;border-top:2px solid var(--paper-warm); }
+  .price-row.total .lbl { font-size:15px;font-weight:700;color:var(--ink); }
+  .price-row.total .val { font-size:22px;font-weight:800;color:var(--navy); }
+
+  /* Coupon */
+  .coupon-row { display:flex;gap:8px;margin:16px 0; }
+  .coupon-input { flex:1;padding:10px 14px;border:1.5px solid var(--paper-warm);border-radius:11px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);background:var(--white);outline:none;transition:.2s;text-transform:uppercase;letter-spacing:1px; }
+  .coupon-input:focus { border-color:var(--gold);box-shadow:0 0 0 3px rgba(196,154,43,.1); }
+  .coupon-btn { padding:10px 16px;background:var(--navy);border:none;border-radius:11px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:#fff;cursor:pointer;transition:.2s;white-space:nowrap; }
+  .coupon-btn:hover { background:var(--navy-mid); }
+  .coupon-success { font-size:12.5px;color:var(--success);display:none;align-items:center;gap:5px;margin-top:4px;font-weight:500; }
+  .coupon-success.show { display:flex; }
+
+  /* Trust items */
+  .trust-list { display:flex;flex-direction:column;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid var(--paper-warm); }
+  .trust-item { display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--ink-muted); }
+  .trust-item i { font-size:14px;flex-shrink:0; }
+
+  /* ── SUCCESS PAGE ── */
+  .success-page { display:none; animation:fadeUp .6s ease both; }
+  .success-page.show { display:block; }
+  .receipt-card { background:var(--white);border-radius:24px;box-shadow:0 16px 52px rgba(13,27,42,.12);border:1px solid rgba(214,224,236,.7);overflow:hidden;max-width:600px;margin:0 auto; }
+  .receipt-top { background:linear-gradient(135deg,var(--navy),var(--navy-mid));padding:36px 40px;text-align:center;position:relative;overflow:hidden; }
+  .receipt-top::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.05)1px,transparent 1px);background-size:20px 20px;pointer-events:none;}
+  .receipt-ring { width:88px;height:88px;border-radius:50%;background:rgba(196,154,43,.18);border:3px solid var(--gold);display:grid;place-items:center;margin:0 auto 18px;font-size:38px;position:relative;z-index:1;animation:popIn .6s cubic-bezier(.34,1.6,.64,1) both; }
+  @keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+  .receipt-top h2 { font-family:'Playfair Display',serif;font-size:28px;font-weight:800;color:#fff;margin-bottom:6px;position:relative;z-index:1; }
+  .receipt-top p  { font-size:14px;color:rgba(255,255,255,.6);margin:0;font-weight:300;position:relative;z-index:1; }
+  .receipt-body { padding:28px 32px; }
+  .receipt-id { text-align:center;margin-bottom:22px; }
+  .receipt-id .id-label { font-size:11.5px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.6px; }
+  .receipt-id .id-val { font-size:22px;font-weight:800;color:var(--navy);letter-spacing:2px;margin-top:3px;font-family:'Playfair Display',serif; }
+  .receipt-rows { display:flex;flex-direction:column;gap:0;border-radius:14px;overflow:hidden;border:1px solid var(--paper-warm);margin-bottom:22px; }
+  .receipt-row { display:flex;justify-content:space-between;align-items:center;padding:13px 18px;border-bottom:1px solid var(--paper-warm);font-size:14px; }
+  .receipt-row:last-child { border-bottom:none; }
+  .receipt-row .rl { color:var(--ink-muted); }
+  .receipt-row .rv { font-weight:600;color:var(--ink); }
+  .receipt-row.total-row { background:var(--gold-pale); }
+  .receipt-row.total-row .rl { font-weight:700;color:var(--navy);font-size:15px; }
+  .receipt-row.total-row .rv { font-size:20px;font-weight:800;color:var(--gold); }
+  .receipt-actions { display:flex;gap:10px;flex-wrap:wrap; }
+  .btn-download { flex:1;padding:13px;background:var(--navy);border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14.5px;font-weight:600;color:#fff;cursor:pointer;transition:.2s;box-shadow:0 6px 18px rgba(15,45,74,.22);display:flex;align-items:center;justify-content:center;gap:8px; }
+  .btn-download:hover { background:var(--navy-mid);transform:translateY(-1px); }
+  .btn-dashboard { flex:1;padding:13px;background:linear-gradient(135deg,var(--gold),#a07820);border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14.5px;font-weight:700;color:var(--ink);cursor:pointer;transition:.2s;box-shadow:0 6px 18px rgba(196,154,43,.3);display:flex;align-items:center;justify-content:center;gap:8px; }
+  .btn-dashboard:hover { transform:translateY(-1px);box-shadow:0 10px 24px rgba(196,154,43,.42); }
+  .confetti-strip { display:flex;justify-content:center;gap:6px;margin-bottom:18px;font-size:20px; }
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+  @media(max-width:940px) {
+    .main-grid { grid-template-columns:1fr; }
+    .plans-row { grid-template-columns:1fr 1fr; }
+    .summary-card { position:static; }
+    .content-area { padding:28px 14px 60px; }
+    .top-nav { padding:12px 16px; }
+  }
+  @media(max-width:560px) {
+    .plans-row { grid-template-columns:1fr; }
+    .method-tabs { grid-template-columns:repeat(2,1fr); }
+    .bank-grid { grid-template-columns:repeat(3,1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<div class="page-shell">
+
+  <!-- ── NAV ── -->
+  <nav class="top-nav">
+    <a href="#" class="brand-lockup">
+      <svg class="brand-gem" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="52" height="52" rx="13" fill="url(#lb)"/>
+        <rect x=".5" y=".5" width="51" height="51" rx="12.5" stroke="url(#ls)" stroke-opacity=".5"/>
+        <path d="M10 34 Q10 19 26 17 Q42 19 42 34" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+        <line x1="26" y1="17" x2="26" y2="37" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M10 34 Q14 32 19 33 Q22 33.5 26 37" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.5)" stroke-width="1"/>
+        <path d="M42 34 Q38 32 33 33 Q30 33.5 26 37" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.5)" stroke-width="1"/>
+        <circle cx="34" cy="22" r="6.5" stroke="url(#gr)" stroke-width="2.2" fill="rgba(255,255,255,.06)"/>
+        <line x1="38.6" y1="26.6" x2="43" y2="31" stroke="url(#gh)" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="32.5" cy="20.5" r="1.3" fill="rgba(255,255,255,.55)"/>
+        <path d="M16 19 L16.6 21 L18.6 21 L17 22.2 L17.6 24.2 L16 23 L14.4 24.2 L15 22.2 L13.4 21 L15.4 21 Z" fill="url(#gs)" opacity=".85"/>
+        <defs>
+          <linearGradient id="lb" x1="0" y1="0" x2="52" y2="52" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#1a4f82"/><stop offset="100%" stop-color="#0c2d4e"/></linearGradient>
+          <linearGradient id="ls" x1="0" y1="0" x2="52" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#c49a2b" stop-opacity=".8"/><stop offset="50%" stop-color="white" stop-opacity=".15"/><stop offset="100%" stop-color="#c49a2b" stop-opacity=".3"/></linearGradient>
+          <linearGradient id="gr" x1="27.5" y1="15.5" x2="40.5" y2="28.5" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#f0d98a"/><stop offset="100%" stop-color="#c49a2b"/></linearGradient>
+          <linearGradient id="gh" x1="38.6" y1="26.6" x2="43" y2="31" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#f0d98a"/><stop offset="100%" stop-color="#a07820"/></linearGradient>
+          <linearGradient id="gs" x1="13.4" y1="19" x2="18.6" y2="24.2" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#f0d98a"/><stop offset="100%" stop-color="#c49a2b"/></linearGradient>
+        </defs>
+      </svg>
+      <span class="brand-name">Edu<span>Search</span></span>
+    </a>
+    <a href="#" class="nav-back"><i class="bi bi-arrow-left"></i> Back to Listing</a>
+  </nav>
+
+  <div class="content-area">
+    <div class="content-inner">
+
+      <!-- Title -->
+      <div class="page-title-row">
+        <div class="eyebrow"><i class="bi bi-credit-card-fill me-1"></i> Secure Checkout</div>
+        <h1>School <em>Listing</em> Payment</h1>
+        <p>Choose a plan and complete your payment to publish your school on EduSearch.</p>
+        <div class="gold-bar"></div>
+      </div>
+
+      <!-- Stepper -->
+      <div class="stepper">
+        <div class="step-node">
+          <div class="step-circle done"><i class="bi bi-check2"></i></div>
+          <span class="step-lbl done">School Details</span>
+        </div>
+        <div class="step-line done"></div>
+        <div class="step-node">
+          <div class="step-circle done"><i class="bi bi-check2"></i></div>
+          <span class="step-lbl done">Verification</span>
+        </div>
+        <div class="step-line done"></div>
+        <div class="step-node">
+          <div class="step-circle active">3</div>
+          <span class="step-lbl active">Payment</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-node">
+          <div class="step-circle idle">4</div>
+          <span class="step-lbl">Published</span>
+        </div>
+      </div>
+
+      <!-- ─── PAYMENT SCREEN ─── -->
+      <div id="payment-screen">
+
+        <!-- Plans -->
+        <div class="plans-row" id="plan-cards">
+          <!-- Basic -->
+          <div class="plan-card" data-plan="Basic" data-price="999" onclick="selectPlan(this)">
+            <div class="plan-check"><i class="bi bi-check2" style="color:#fff;font-size:11px;"></i></div>
+            <div class="plan-icon basic"><i class="bi bi-building"></i></div>
+            <div class="plan-name">Basic</div>
+            <div class="plan-price"><sup>₹</sup>999<span>/yr</span></div>
+            <div class="plan-period">Billed annually</div>
+            <div class="plan-features">
+              <div class="plan-feat"><i class="bi bi-check-circle-fill"></i> School profile listing</div>
+              <div class="plan-feat"><i class="bi bi-check-circle-fill"></i> Basic search visibility</div>
+              <div class="plan-feat"><i class="bi bi-check-circle-fill"></i> Contact info display</div>
+              <div class="plan-feat no"><i class="bi bi-x-circle-fill"></i> Featured placement</div>
+              <div class="plan-feat no"><i class="bi bi-x-circle-fill"></i> Analytics dashboard</div>
+              <div class="plan-feat no"><i class="bi bi-x-circle-fill"></i> Priority support</div>
+            </div>
+          </div>
+
+          <!-- Standard -->
+          <div class="plan-card selected" data-plan="Standard" data-price="2499" onclick="selectPlan(this)">
+            <div class="plan-popular-badge">⭐ Popular</div>
+            <div class="plan-check"><i class="bi bi-check2" style="color:#fff;font-size:11px;"></i></div>
+            <div class="plan-icon standard"><i class="bi bi-buildings-fill"></i></div>
+            <div class="plan-name">Standard</div>
+            <div class="plan-price"><sup>₹</sup>2,499<span>/yr</span></div>
+            <div class="plan-period">Billed annually</div>
+            <div class="plan-features">
+              <div class="plan-feat"><i class="bi bi-check-circle-fill"></i> Everything in Basic</div>
+              <div class="plan-feat"><i class="bi bi-check-circle-fill"></i> Featured placement</div>
+              <div class="plan-feat"><i class="bi bi-check-circle-fill"></i> Photo gallery (10 pics)</div>
+              <div class="plan-feat"><i class="bi bi-check-circle-fill"></i> Analytics dashboard</div>
+              <div class="plan-feat no"><i class="bi bi-x-circle-fill"></i> Top search ranking</div>
+              <div class="plan-feat no"><i class="bi bi-x-circle-fill"></i> Dedicated manager</div>
+            </div>
+          </div>
+
+          <!-- Premium -->
+          <div class="plan-card" data-plan="Premium" data-price="4999" onclick="selectPlan(this)">
+            <div class="plan-check"><i class="bi bi-check2" style="color:#fff;font-size:11px;"></i></div>
+            <div class="plan-icon premium"><i class="bi bi-trophy-fill"></i></div>
+            <div class="plan-name">Premium</div>
+            <div class="plan-price"><sup>₹</sup>4,999<span>/yr</span></div>
+            <div class="plan-period">Billed annually</div>
+            <div class="plan-features">
+              <div class="plan-feat"><i class="bi bi-check-circle-fill"></i> Everything in Standard</div>
+              <div class="plan-feat"><i class="bi bi-check-circle-fill"></i> Top search ranking</div>
+              <div class="plan-feat"><i class="bi bi-check-circle-fill"></i> Unlimited photo gallery</div>
+              <div class="plan-feat"><i class="bi bi-check-circle-fill"></i> Dedicated account manager</div>
+              <div class="plan-feat"><i class="bi bi-check-circle-fill"></i> Parent inquiry alerts</div>
+              <div class="plan-feat"><i class="bi bi-check-circle-fill"></i> Custom school banner</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main grid -->
+        <div class="main-grid">
+
+          <!-- LEFT: Payment form -->
+          <div>
+            <div class="pay-form-card">
+              <div class="pay-form-header">
+                <h3>Payment Details</h3>
+                <p>All transactions are encrypted and 100% secure.</p>
+              </div>
+              <div class="pay-form-body">
+
+                <!-- Method tabs -->
+                <div class="method-tabs">
+                  <div class="method-tab active" onclick="switchMethod('card',this)">
+                    <i class="bi bi-credit-card-2-front-fill card-icon"></i>
+                    <span>Card</span>
+                  </div>
+                  <div class="method-tab" onclick="switchMethod('upi',this)">
+                    <i class="bi bi-phone-fill upi-icon"></i>
+                    <span>UPI</span>
+                  </div>
+                  <div class="method-tab" onclick="switchMethod('net',this)">
+                    <i class="bi bi-bank net-icon"></i>
+                    <span>Net Banking</span>
+                  </div>
+                  <div class="method-tab" onclick="switchMethod('wallet',this)">
+                    <i class="bi bi-wallet2 wallet-icon"></i>
+                    <span>Wallet</span>
+                  </div>
+                </div>
+
+                <!-- Card section -->
+                <div class="card-section show" id="sec-card">
+                  <div class="mb-3">
+                    <label class="f-label">Cardholder Name <span class="req">*</span></label>
+                    <div class="f-wrap">
+                      <input class="f-input" id="card-name" type="text" placeholder="Name on card">
+                      <i class="bi bi-person-fill f-icon"></i>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="f-label">Card Number <span class="req">*</span></label>
+                    <div class="f-wrap">
+                      <input class="f-input" id="card-number" type="text" placeholder="0000  0000  0000  0000" maxlength="19" oninput="formatCard(this)" style="padding-right:90px;">
+                      <i class="bi bi-credit-card f-icon"></i>
+                      <div class="card-brands">
+                        <div class="card-brand-icon" id="brand-visa">VISA</div>
+                        <div class="card-brand-icon" id="brand-mc">MC</div>
+                      </div>
+                    </div>
+                    <div class="f-error" id="card-num-err">Enter a valid 16-digit card number.</div>
+                  </div>
+                  <div class="row g-3">
+                    <div class="col-7">
+                      <label class="f-label">Expiry Date <span class="req">*</span></label>
+                      <div class="f-wrap">
+                        <input class="f-input" id="card-expiry" type="text" placeholder="MM / YY" maxlength="7" oninput="formatExpiry(this)">
+                        <i class="bi bi-calendar3 f-icon"></i>
+                      </div>
+                      <div class="f-error" id="expiry-err">Enter a valid expiry date.</div>
+                    </div>
+                    <div class="col-5">
+                      <label class="f-label">CVV <span class="req">*</span></label>
+                      <div class="f-wrap">
+                        <input class="f-input" id="card-cvv" type="password" placeholder="• • •" maxlength="4">
+                        <i class="bi bi-lock-fill f-icon"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- UPI section -->
+                <div class="upi-section" id="sec-upi">
+                  <label class="f-label" style="margin-bottom:10px;">Select UPI App</label>
+                  <div class="upi-apps">
+                    <div class="upi-app active" onclick="selectUpi(this)">
+                      <div class="upi-dot" style="background:#6739b7;">G</div> GPay
+                    </div>
+                    <div class="upi-app" onclick="selectUpi(this)">
+                      <div class="upi-dot" style="background:#00b9f1;">P</div> PhonePe
+                    </div>
+                    <div class="upi-app" onclick="selectUpi(this)">
+                      <div class="upi-dot" style="background:#e07820;">B</div> BHIM
+                    </div>
+                    <div class="upi-app" onclick="selectUpi(this)">
+                      <div class="upi-dot" style="background:#004b8d;">P</div> Paytm
+                    </div>
+                  </div>
+                  <label class="f-label">UPI ID</label>
+                  <div class="f-wrap">
+                    <input class="f-input" id="upi-id" type="text" placeholder="yourname@upi">
+                    <i class="bi bi-at f-icon"></i>
+                  </div>
+                </div>
+
+                <!-- Net banking -->
+                <div class="net-section" id="sec-net">
+                  <label class="f-label" style="margin-bottom:10px;">Select Your Bank</label>
+                  <div class="bank-grid">
+                    <div class="bank-chip active" onclick="selectBank(this)"><span class="bk-icon">🏦</span>SBI</div>
+                    <div class="bank-chip" onclick="selectBank(this)"><span class="bk-icon">🏦</span>HDFC</div>
+                    <div class="bank-chip" onclick="selectBank(this)"><span class="bk-icon">🏦</span>ICICI</div>
+                    <div class="bank-chip" onclick="selectBank(this)"><span class="bk-icon">🏦</span>Axis</div>
+                    <div class="bank-chip" onclick="selectBank(this)"><span class="bk-icon">🏦</span>PNB</div>
+                    <div class="bank-chip" onclick="selectBank(this)"><span class="bk-icon">🏦</span>Kotak</div>
+                    <div class="bank-chip" onclick="selectBank(this)"><span class="bk-icon">🏦</span>BOB</div>
+                    <div class="bank-chip" onclick="selectBank(this)"><span class="bk-icon">🏦</span>Other</div>
+                  </div>
+                </div>
+
+                <!-- Wallet -->
+                <div class="wallet-section" id="sec-wallet">
+                  <label class="f-label" style="margin-bottom:10px;">Select Wallet</label>
+                  <div class="wallet-grid">
+                    <div class="wallet-item active" onclick="selectWallet(this)"><span class="wlt-icon">💼</span>Paytm</div>
+                    <div class="wallet-item" onclick="selectWallet(this)"><span class="wlt-icon">📱</span>PhonePe</div>
+                    <div class="wallet-item" onclick="selectWallet(this)"><span class="wlt-icon">💳</span>Amazon Pay</div>
+                    <div class="wallet-item" onclick="selectWallet(this)"><span class="wlt-icon">🔵</span>Mobikwik</div>
+                    <div class="wallet-item" onclick="selectWallet(this)"><span class="wlt-icon">🟠</span>Freecharge</div>
+                    <div class="wallet-item" onclick="selectWallet(this)"><span class="wlt-icon">💚</span>Airtel Money</div>
+                  </div>
+                </div>
+
+                <!-- Pay button -->
+                <button class="btn-pay" id="pay-btn" onclick="processPayment()">
+                  <span id="pay-btn-text"><i class="bi bi-lock-fill"></i> Pay ₹<span id="pay-amount">2,499</span> Securely</span>
+                  <div class="spinner" id="pay-spinner"></div>
+                </button>
+
+                <!-- Security badges -->
+                <div class="secure-row">
+                  <div class="secure-badge"><i class="bi bi-shield-fill-check" style="color:var(--success);"></i> SSL Encrypted</div>
+                  <div class="secure-badge"><i class="bi bi-patch-check-fill" style="color:var(--gold);"></i> PCI DSS Compliant</div>
+                  <div class="secure-badge"><i class="bi bi-arrow-repeat" style="color:var(--navy-mid);"></i> 100% Refund Policy</div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: Order summary -->
+          <div>
+            <div class="summary-card">
+              <div class="summary-banner">
+                <h4>Order Summary</h4>
+                <p>Review your listing plan details</p>
+              </div>
+              <div class="summary-body">
+
+                <!-- School mini -->
+                <div class="school-mini">
+                  <div class="school-mini-logo">S</div>
+                  <div>
+                    <div class="school-mini-name">Sunrise International School</div>
+                    <div class="school-mini-loc"><i class="bi bi-geo-alt-fill"></i> Mumbai, Maharashtra</div>
+                  </div>
+                </div>
+
+                <!-- Selected plan -->
+                <div class="selected-plan-row">
+                  <div>
+                    <div style="font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;">Selected Plan</div>
+                    <div class="selected-plan-name" id="sum-plan-name">Standard Plan</div>
+                  </div>
+                  <div class="selected-plan-price" id="sum-plan-price">₹2,499</div>
+                </div>
+
+                <!-- Price breakdown -->
+                <div class="price-row"><span class="lbl">Listing Fee (Annual)</span><span class="val" id="pb-base">₹2,499</span></div>
+                <div class="price-row"><span class="lbl">GST (18%)</span><span class="val" id="pb-gst">₹449</span></div>
+                <div class="price-row"><span class="lbl" style="color:var(--success);">Discount</span><span class="val" id="pb-disc" style="color:var(--success);">- ₹0</span></div>
+                <div class="price-row total">
+                  <span class="lbl">Total Due</span>
+                  <span class="val" id="pb-total">₹2,948</span>
+                </div>
+
+                <!-- Coupon -->
+                <div class="coupon-row">
+                  <input class="coupon-input" type="text" id="coupon-input" placeholder="COUPON CODE">
+                  <button class="coupon-btn" onclick="applyCoupon()">Apply</button>
+                </div>
+                <div class="coupon-success" id="coupon-success"><i class="bi bi-check-circle-fill"></i> Coupon applied! ₹250 off.</div>
+
+                <!-- Trust -->
+                <div class="trust-list">
+                  <div class="trust-item"><i class="bi bi-shield-fill-check" style="color:var(--success);"></i> Secure & Encrypted Payment</div>
+                  <div class="trust-item"><i class="bi bi-arrow-counterclockwise" style="color:var(--gold);"></i> 7-day full refund guarantee</div>
+                  <div class="trust-item"><i class="bi bi-headset" style="color:var(--navy-mid);"></i> 24/7 customer support</div>
+                  <div class="trust-item"><i class="bi bi-patch-check-fill" style="color:var(--navy-mid);"></i> Instant listing activation</div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── SUCCESS RECEIPT ─── -->
+      <div class="success-page" id="success-page">
+        <div class="receipt-card">
+          <div class="receipt-top">
+            <div class="receipt-ring">🎉</div>
+            <h2>Payment Successful!</h2>
+            <p>Your school is now live on EduSearch. Parents can discover it instantly.</p>
+          </div>
+          <div class="receipt-body">
+            <div class="confetti-strip">🎊 🏫 ⭐ 🎊 🏫 ⭐ 🎊</div>
+            <div class="receipt-id">
+              <div class="id-label">Transaction ID</div>
+              <div class="id-val" id="txn-id">—</div>
+            </div>
+            <div class="receipt-rows">
+              <div class="receipt-row"><span class="rl">School</span><span class="rv">Sunrise International School</span></div>
+              <div class="receipt-row"><span class="rl">Plan</span><span class="rv" id="r-plan">Standard</span></div>
+              <div class="receipt-row"><span class="rl">Validity</span><span class="rv">1 Year (Auto-renewal off)</span></div>
+              <div class="receipt-row"><span class="rl">Payment Method</span><span class="rv" id="r-method">Card</span></div>
+              <div class="receipt-row"><span class="rl">Date</span><span class="rv" id="r-date">—</span></div>
+              <div class="receipt-row total-row"><span class="rl">Amount Paid</span><span class="rv" id="r-amount">₹2,948</span></div>
+            </div>
+            <div class="receipt-actions">
+              <button class="btn-download" onclick="alert('Receipt downloaded!')"><i class="bi bi-download"></i> Download Receipt</button>
+              <button class="btn-dashboard" onclick="window.location.href='edusearch_school_info.html'"><i class="bi bi-buildings-fill"></i> View My Listing</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // ── Plan data ──────────────────────────────
+  const plans = {
+    Basic:    { price:999,  gst:180,  total:1179  },
+    Standard: { price:2499, gst:449,  total:2948  },
+    Premium:  { price:4999, gst:899,  total:5898  },
+  };
+  let activePlan   = 'Standard';
+  let activeMethod = 'card';
+  let couponApplied = false;
+
+  // ── Select plan ────────────────────────────
+  function selectPlan(card) {
+    document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    activePlan = card.dataset.plan;
+    updateSummary();
+  }
+
+  function updateSummary() {
+    const p = plans[activePlan];
+    const disc = couponApplied ? 250 : 0;
+    const total = p.total - disc;
+    document.getElementById('sum-plan-name').textContent = activePlan + ' Plan';
+    document.getElementById('sum-plan-price').textContent = '₹' + p.price.toLocaleString('en-IN');
+    document.getElementById('pb-base').textContent  = '₹' + p.price.toLocaleString('en-IN');
+    document.getElementById('pb-gst').textContent   = '₹' + p.gst.toLocaleString('en-IN');
+    document.getElementById('pb-disc').textContent  = '- ₹' + disc;
+    document.getElementById('pb-total').textContent = '₹' + total.toLocaleString('en-IN');
+    document.getElementById('pay-amount').textContent = total.toLocaleString('en-IN');
+  }
+
+  // ── Coupon ─────────────────────────────────
+  function applyCoupon() {
+    const code = document.getElementById('coupon-input').value.trim().toUpperCase();
+    if (code === 'EDU250' || code === 'SCHOOL10') {
+      couponApplied = true;
+      document.getElementById('coupon-success').classList.add('show');
+      updateSummary();
+    } else {
+      document.getElementById('coupon-input').style.borderColor = 'var(--danger)';
+      setTimeout(() => document.getElementById('coupon-input').style.borderColor = '', 1500);
+    }
+  }
+
+  // ── Payment method switch ──────────────────
+  function switchMethod(method, tab) {
+    document.querySelectorAll('.method-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    activeMethod = method;
+    ['card','upi','net','wallet'].forEach(m => {
+      document.getElementById('sec-' + m).classList.remove('show');
+    });
+    document.getElementById('sec-' + method).classList.add('show');
+    const labels = { card:'Card', upi:'UPI', net:'Net Banking', wallet:'Wallet' };
+    document.getElementById('r-method').textContent = labels[method];
+  }
+
+  // ── Card formatting ────────────────────────
+  function formatCard(input) {
+    let val = input.value.replace(/\D/g,'').slice(0,16);
+    input.value = val.replace(/(\d{4})(?=\d)/g,'$1  ');
+    const v = document.getElementById('brand-visa');
+    const m = document.getElementById('brand-mc');
+    v.classList.toggle('active', val[0] === '4');
+    m.classList.toggle('active', val[0] === '5');
+  }
+
+  function formatExpiry(input) {
+    let val = input.value.replace(/\D/g,'').slice(0,4);
+    if (val.length >= 2) val = val.slice(0,2) + ' / ' + val.slice(2);
+    input.value = val;
+  }
+
+  // ── UPI / Bank / Wallet selectors ──────────
+  function selectUpi(el) { document.querySelectorAll('.upi-app').forEach(e => e.classList.remove('active')); el.classList.add('active'); }
+  function selectBank(el) { document.querySelectorAll('.bank-chip').forEach(e => e.classList.remove('active')); el.classList.add('active'); }
+  function selectWallet(el) { document.querySelectorAll('.wallet-item').forEach(e => e.classList.remove('active')); el.classList.add('active'); }
+
+  // ── Process payment ────────────────────────
+  function processPayment() {
+    const btn = document.getElementById('pay-btn');
+    const txt = document.getElementById('pay-btn-text');
+    const spin = document.getElementById('pay-spinner');
+    btn.disabled = true; txt.style.opacity = '0'; spin.style.display = 'block';
+
+    setTimeout(() => {
+      btn.disabled = false; txt.style.opacity = '1'; spin.style.display = 'none';
+      showReceipt();
+    }, 2200);
+  }
+
+  // ── Show receipt ───────────────────────────
+  function showReceipt() {
+    document.getElementById('payment-screen').style.display = 'none';
+    const sp = document.getElementById('success-page');
+    sp.classList.add('show');
+
+    // Update stepper
+    document.querySelectorAll('.step-circle')[2].className = 'step-circle done';
+    document.querySelectorAll('.step-circle')[2].innerHTML = '<i class="bi bi-check2"></i>';
+    document.querySelectorAll('.step-line')[2].classList.add('done');
+    document.querySelectorAll('.step-circle')[3].className = 'step-circle active';
+    document.querySelectorAll('.step-circle')[3].textContent = '4';
+
+    // Fill receipt
+    const txn = 'EDU' + Date.now().toString().slice(-8).toUpperCase();
+    document.getElementById('txn-id').textContent = txn;
+    document.getElementById('r-plan').textContent = activePlan;
+    document.getElementById('r-date').textContent = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+    const p = plans[activePlan];
+    const total = p.total - (couponApplied ? 250 : 0);
+    document.getElementById('r-amount').textContent = '₹' + total.toLocaleString('en-IN');
+    document.getElementById('r-method').textContent = {card:'Debit/Credit Card',upi:'UPI',net:'Net Banking',wallet:'Wallet'}[activeMethod];
+
+    sp.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+
+  updateSummary();
+</script>
+</body>
+</html>
