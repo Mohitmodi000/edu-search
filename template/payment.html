@@ -344,7 +344,7 @@
       </svg>
       <span class="brand-name">Edu<span>Search</span></span>
     </a>
-    <a href="#" class="nav-back"><i class="bi bi-arrow-left"></i> Back to Listing</a>
+    <a href="{% url 'show' %}" class="nav-back"><i class="bi bi-arrow-left"></i> Back to Listing</a>
   </nav>
 
   <div class="content-area">
@@ -590,6 +590,15 @@
               <div class="summary-body">
 
                 <!-- School mini -->
+                {% for s in school %}
+                <div class="school-mini">
+                  <div class="school-mini-logo">{{ s.school_name|slice:":1"|upper }}</div>
+                  <div>
+                    <div class="school-mini-name">{{s.school_name}}</div>
+                    <div class="school-mini-loc"><i class="bi bi-geo-alt-fill"></i> {{s.city}}</div>
+                  </div>
+                </div>
+                {% empty %}
                 <div class="school-mini">
                   <div class="school-mini-logo">S</div>
                   <div>
@@ -597,6 +606,7 @@
                     <div class="school-mini-loc"><i class="bi bi-geo-alt-fill"></i> Mumbai, Maharashtra</div>
                   </div>
                 </div>
+                {% endfor %}
 
                 <!-- Selected plan -->
                 <div class="selected-plan-row">
@@ -651,17 +661,43 @@
               <div class="id-label">Transaction ID</div>
               <div class="id-val" id="txn-id">—</div>
             </div>
+           
             <div class="receipt-rows">
-              <div class="receipt-row"><span class="rl">School</span><span class="rv">Sunrise International School</span></div>
-              <div class="receipt-row"><span class="rl">Plan</span><span class="rv" id="r-plan">Standard</span></div>
+              {% with s=school.0 %}
+              <div class="receipt-row"><span class="rl">School Name</span><span class="rv" id="r-school">{{ s.school_name|default:"Sunrise International School" }}</span></div>
+              <div class="receipt-row"><span class="rl">Owner / Principal</span><span class="rv">{{ s.owner|default:"Dr. Rajesh Sharma" }}</span></div>
+              <div class="receipt-row"><span class="rl">Curriculum Board</span><span class="rv">{{ s.board|upper|default:"CBSE" }}</span></div>
+              <div class="receipt-row"><span class="rl">Established Year</span><span class="rv">{{ s.stablished_year|default:"2005" }}</span></div>
+              <div class="receipt-row"><span class="rl">UDISE Code</span><span class="rv">{{ s.udise_code|default:"27210508502" }}</span></div>
+              <div class="receipt-row"><span class="rl">Affiliation No.</span><span class="rv">{{ s.affiliation_number|default:"1130092" }}</span></div>
+              <div class="receipt-row"><span class="rl">City / Location</span><span class="rv">{{ s.city|default:"Mumbai, Maharashtra" }}</span></div>
+              <div class="receipt-row"><span class="rl">Full Address</span><span class="rv" style="font-size:12.5px; max-width:240px; text-align:right;">{{ s.address|default:"Andheri West, Mumbai" }}</span></div>
+              <div class="receipt-row"><span class="rl">Website Link</span><span class="rv" style="font-size:12.5px; max-width:240px; word-break:break-all; text-align:right;"><a href="{{ s.link|default:'#' }}" target="_blank" style="color:var(--navy-mid); text-decoration:underline;">{{ s.link|default:"www.sunriseschool.edu.in" }}</a></span></div>
+              
+              {% if s.school_logo %}
+              <div class="receipt-row">
+                <span class="rl">School Logo</span>
+                <span class="rv"><img src="{{ s.school_logo.url }}" style="width:40px; height:40px; border-radius:6px; object-fit:cover; border:1px solid var(--paper-warm);"></span>
+              </div>
+              {% endif %}
+              
+              {% if s.recognition_certificate %}
+              <div class="receipt-row">
+                <span class="rl">Certificate</span>
+                <span class="rv"><a href="{{ s.recognition_certificate.url }}" target="_blank" style="color:var(--navy-mid); text-decoration:underline; font-size:12.5px;"><i class="bi bi-file-earmark-text-fill"></i> View Certificate</a></span>
+              </div>
+              {% endif %}
+              
+              <div class="receipt-row"><span class="rl">Listing Plan</span><span class="rv" id="r-plan">Standard</span></div>
               <div class="receipt-row"><span class="rl">Validity</span><span class="rv">1 Year (Auto-renewal off)</span></div>
               <div class="receipt-row"><span class="rl">Payment Method</span><span class="rv" id="r-method">Card</span></div>
-              <div class="receipt-row"><span class="rl">Date</span><span class="rv" id="r-date">—</span></div>
+              <div class="receipt-row"><span class="rl">Transaction Date</span><span class="rv" id="r-date">—</span></div>
               <div class="receipt-row total-row"><span class="rl">Amount Paid</span><span class="rv" id="r-amount">₹2,948</span></div>
+              {% endwith %}
             </div>
             <div class="receipt-actions">
               <button class="btn-download" onclick="alert('Receipt downloaded!')"><i class="bi bi-download"></i> Download Receipt</button>
-              <button class="btn-dashboard" onclick="window.location.href='edusearch_school_info.html'"><i class="bi bi-buildings-fill"></i> View My Listing</button>
+              <a href="{% url 'show' %}" class="btn-dashboard" style="text-decoration: none;"><i class="bi bi-buildings-fill"></i> View My Listing</a>
             </div>
           </div>
         </div>

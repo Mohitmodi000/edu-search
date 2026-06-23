@@ -402,6 +402,18 @@
   <main class="right-panel">
     <div class="form-wrap">
 
+      <!-- Django Messages -->
+      {% if messages %}
+        <div class="messages-container mb-4">
+          {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert" style="border-radius: 12px; font-size: 14.5px;">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
       <!-- Tab switcher -->
       <div class="auth-tabs">
         <button class="auth-tab active" id="tab-signin" onclick="switchTab('signin')">Sign In</button>
@@ -650,13 +662,8 @@
 
     if (!valid) return;
 
-    // Simulate loading
     setLoading('si', true);
-    setTimeout(() => {
-      setLoading('si', false);
-      const name = email.split('@')[0];
-      showSuccess(name, email);
-    }, 1800);
+    this.submit();
   });
 
   // ── Sign Up ─────────────────────────────────
@@ -688,10 +695,7 @@
     if (!valid) return;
 
     setLoading('su', true);
-    setTimeout(() => {
-      setLoading('su', false);
-      showSuccess(fname || email.split('@')[0], email);
-    }, 1800);
+    this.submit();
   });
 
   // ── Loading state ───────────────────────────
@@ -718,8 +722,7 @@
 
   // ── Go to profile ───────────────────────────
   function goToProfile() {
-    // Change this to your actual profile page URL
-    window.location.href = 'parent_login.html';
+    window.location.href = '/parent/';
   }
 
   // ── Social login ────────────────────────────

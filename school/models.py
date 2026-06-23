@@ -52,14 +52,24 @@ class parent_info(models.Model):
     E_mail=models.EmailField()
     pasward=models.PositiveIntegerField(default=1234)
     resister=models.DateField(auto_now=True)
+    cover_image=models.ImageField(upload_to='img/parent_covers/', null=True, blank=True)
 
-class payment:
+class payment(models.Model):
     school_name = models.CharField(max_length=100)
 
     plan = models.CharField(max_length=50)
 
     amount = models.IntegerField()
 
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class Booking(models.Model):
+    parent = models.ForeignKey(parent_info, on_delete=models.CASCADE, related_name='bookings')
+    child_name = models.CharField(max_length=50)
+    school_name = models.CharField(max_length=100)
+    class_grade = models.CharField(max_length=20)
+    seat_number = models.CharField(max_length=10)
+    status = models.CharField(max_length=20, default="Confirmed")
     created_at = models.DateTimeField(auto_now_add=True)
 
 

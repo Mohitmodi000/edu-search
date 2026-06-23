@@ -376,6 +376,8 @@
     .booking-details { grid-template-columns:1fr 1fr; }
     .profile-actions { flex-wrap:wrap; }
   }
+  #colorw{ color: white;
+  te}
 </style>
 </head>
 <body>
@@ -413,44 +415,42 @@
       <span class="brand-name">Edu<span>Search</span></span>
     </a>
     <div class="nav-right">
-      <a href="#" class="nav-icon-btn"><i class="bi bi-search"></i></a>
-      <a href="#" class="nav-icon-btn"><i class="bi bi-bell"></i><span class="notif-dot"></span></a>
-      <a href="#" class="nav-icon-btn"><i class="bi bi-grid-3x3-gap-fill"></i></a>
-      <div class="nav-avatar" onclick="openModal()">R</div>
+      <a href="{% url 'show' %}" class="nav-back" id="colorw">
+        <i class="bi bi-arrow-left"></i> Back to Schools
+      </a>
+      <a href="{% url 'parent_logout' %}" class="nav-icon-btn" title="Logout"><i class="bi bi-box-arrow-right"></i></a>
+      <div class="nav-avatar" onclick="openModal()">{{ parent.0.parent_name|slice:":1"|upper }}</div>
     </div>
   </nav>
  
   <div class="content-area">
- 
+    {% for i in parent %}
     <!-- ── HERO ── -->
     <div class="profile-hero">
-      <div class="cover-band">
-        <button class="cover-edit-btn"><i class="bi bi-camera-fill"></i> Change Cover</button>
+      <div class="cover-band" id="cover-band" style="{% if i.cover_image %}background-image: url('{{ i.cover_image.url }}'); background-size: cover; background-position: center;{% endif %}">
+        <button class="cover-edit-btn" onclick="document.getElementById('cover-input').click()"><i class="bi bi-camera-fill"></i> Change Cover</button>
+        <input type="file" id="cover-input" style="display: none;" accept="image/*">
       </div>
       
-      {% for i in parent %}
-        
-      
-        
       <div class="identity-row">
         <div class="avatar-section">
           <div class="big-avatar">
-            {{i.parent_name}}
+            {{ i.parent_name|slice:":1"|upper }}
             <div class="avatar-upload-btn" onclick="showToast('Upload feature coming soon!')"><i class="bi bi-camera-fill"></i></div>
           </div>
           <div class="identity-text">
-            <h2 id="display-name">{{i.parent_name}}</h2>
+            <h2 id="display-name">{{ i.parent_name }}</h2>
             <span class="role-pill"><i class="bi bi-person-heart-fill me-1"></i> Parent Account</span>
             <div class="verified-badge mt-2"><i class="bi bi-patch-check-fill"></i> Verified</div>
           </div>
         </div>
         <div class="profile-actions">
           <button class="btn-edit-profile" onclick="openModal()"><i class="bi bi-pencil-fill"></i> Edit Profile</button>
-          <button class="btn-share" onclick="showToast('Profile link copied!')"><i class="bi bi-share-fill"></i> Share</button>
+          <button class="btn-share" onclick="copyProfileLink()"><i class="bi bi-share-fill"></i> Share</button>
         </div>
       </div>
     </div>
-    {% endfor %}
+
     <!-- ── PROFILE BODY ── -->
     <div class="profile-body">
  
@@ -458,18 +458,18 @@
       <div class="stats-row">
         <div class="stat-card">
           <div class="stat-icon navy"><i class="bi bi-people-fill"></i></div>
-          <div class="stat-val">2</div>
+          <div class="stat-val">{{ children_enrolled }}</div>
           <div class="stat-lbl">Children Enrolled</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon gold"><i class="bi bi-ticket-perforated-fill"></i></div>
-          <div class="stat-val">2</div>
+          <div class="stat-val">{{ seats_booked }}</div>
           <div class="stat-lbl">Seats Booked</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon green"><i class="bi bi-buildings-fill"></i></div>
-          <div class="stat-val">1</div>
-          <div class="stat-lbl">School Selected</div>
+          <div class="stat-val">{{ school_selected }}</div>
+          <div class="stat-lbl">Schools Selected</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon red"><i class="bi bi-bell-fill"></i></div>
@@ -483,11 +483,7 @@
  
         <!-- LEFT COLUMN -->
         <div class="d-flex flex-column gap-4">
-           
-            {% for i in parent %}
-            
-           
-            
+ 
             <!-- Personal Info -->
             <div class="panel-card" style="animation-delay:.06s">
               <div class="panel-title">
@@ -498,35 +494,35 @@
                 <div class="info-item-icon"><i class="bi bi-person-fill"></i></div>
                 <div>
                   <div class="info-item-lbl">Full Name</div>
-                  <div class="info-item-val" id="info-name">{{i.parent_name}}</div>
+                  <div class="info-item-val" id="info-name">{{ i.parent_name }}</div>
                 </div>
               </div>
               <div class="info-item">
                 <div class="info-item-icon"><i class="bi bi-envelope-fill"></i></div>
                 <div>
                   <div class="info-item-lbl">Email Address</div>
-                  <div class="info-item-val"><a href="mailto:rajesh@email.com" id="info-email">{{i.E_mail}}</a></div>
+                  <div class="info-item-val"><a href="mailto:{{ i.E_mail }}" id="info-email">{{ i.E_mail }}</a></div>
                 </div>
               </div>
               <div class="info-item">
                 <div class="info-item-icon"><i class="bi bi-phone-fill"></i></div>
                 <div>
                   <div class="info-item-lbl">Phone Number</div>
-                  <div class="info-item-val" id="info-phone">{{i.phone_no}}</div>
+                  <div class="info-item-val" id="info-phone">{{ i.phone_no }}</div>
                 </div>
               </div>
               <div class="info-item">
                 <div class="info-item-icon gold"><i class="bi bi-geo-alt-fill"></i></div>
                 <div>
                   <div class="info-item-lbl">City / Location</div>
-                  <div class="info-item-val" id="info-city">{{i.city}}</div>
+                  <div class="info-item-val" id="info-city">{{ i.city }}</div>
                 </div>
               </div>
               <div class="info-item">
                 <div class="info-item-icon"><i class="bi bi-calendar3"></i></div>
                 <div>
                   <div class="info-item-lbl">Member Since</div>
-                  <div class="info-item-val">{{i.resister}}</div>
+                  <div class="info-item-val">{{ i.resister }}</div>
                 </div>
               </div>
               <div class="info-item">
@@ -537,37 +533,36 @@
                 </div>
               </div>
             </div>
-           {% endfor %}
+
           <!-- Children -->
           <div class="panel-card" style="animation-delay:.1s">
             <div class="panel-title">
               <div class="panel-title-text"><i class="bi bi-people-fill" style="background:var(--gold-pale);color:#a07820;"></i> My Children</div>
-              <button class="btn-edit-sm" onclick="showToast('Add child coming soon!')"><i class="bi bi-plus-lg"></i> Add</button>
+              <button class="btn-edit-sm" onclick="window.location.href='{% url 'seat' %}'"><i class="bi bi-plus-lg"></i> Add</button>
             </div>
             <div class="children-list">
-              <div class="child-card">
-                <div class="child-avatar" style="background:linear-gradient(135deg,#1a4fa0,#2563a8);">A</div>
-                <div class="flex-grow-1">
-                  <div class="child-name">Aarav Kumar</div>
-                  <div class="child-meta">
-                    <span class="child-pill pill-class"><i class="bi bi-mortarboard-fill"></i> Class 7th</span>
-                    <span class="child-pill pill-seat"><i class="bi bi-ticket-perforated"></i> Seat 14</span>
+              {% for b in bookings %}
+                <div class="child-card" onclick="window.location.href='{% url 'seat' %}'">
+                  <div class="child-avatar" style="background: linear-gradient(135deg, var(--navy), var(--navy-mid));">
+                    {{ b.child_name|slice:":1"|upper }}
                   </div>
-                </div>
-                <i class="bi bi-chevron-right child-arrow"></i>
-              </div>
-              <div class="child-card">
-                <div class="child-avatar" style="background:linear-gradient(135deg,#1a7a4a,#2a9a5a);">P</div>
-                <div class="flex-grow-1">
-                  <div class="child-name">Priya Kumar</div>
-                  <div class="child-meta">
-                    <span class="child-pill pill-class"><i class="bi bi-mortarboard-fill"></i> Class 4th</span>
-                    <span class="child-pill pill-seat"><i class="bi bi-ticket-perforated"></i> Seat 7</span>
+                  <div class="flex-grow-1">
+                    <div class="child-name">{{ b.child_name }}</div>
+                    <div class="child-meta">
+                      <span class="child-pill pill-class"><i class="bi bi-mortarboard-fill"></i> Class {{ b.class_grade }}</span>
+                      <span class="child-pill pill-seat"><i class="bi bi-ticket-perforated"></i> Seat {{ b.seat_number }}</span>
+                      <span class="child-pill pill-school"><i class="bi bi-buildings-fill"></i> {{ b.school_name }}</span>
+                    </div>
                   </div>
+                  <i class="bi bi-chevron-right child-arrow"></i>
                 </div>
-                <i class="bi bi-chevron-right child-arrow"></i>
-              </div>
-              <div class="add-child-btn" onclick="showToast('Add child coming soon!')">
+              {% empty %}
+                <div style="text-align: center; padding: 24px; color: var(--ink-muted); font-size: 14px;">
+                  <i class="bi bi-emoji-smile" style="font-size: 24px; display: block; margin-bottom: 8px; opacity: 0.5;"></i>
+                  No children enrolled yet.
+                </div>
+              {% endfor %}
+              <div class="add-child-btn" onclick="window.location.href='{% url 'seat' %}'">
                 <i class="bi bi-plus-circle-fill"></i> Add Another Child
               </div>
             </div>
@@ -585,49 +580,34 @@
               <a href="#" class="btn-edit-sm"><i class="bi bi-arrow-right"></i> All Bookings</a>
             </div>
  
-            <!-- Booking 1 -->
-            <div class="booking-summary">
-              <div class="booking-top">
-                <div class="booking-school"><i class="bi bi-buildings-fill"></i> Sunrise International School</div>
-                <span class="booking-status status-confirmed">✓ Confirmed</span>
-              </div>
-              <div class="booking-details">
-                <div>
-                  <div class="bd-item-lbl">Child</div>
-                  <div class="bd-item-val">Aarav Kumar</div>
+            {% for b in bookings %}
+              <div class="booking-summary">
+                <div class="booking-top">
+                  <div class="booking-school"><i class="bi bi-buildings-fill"></i> {{ b.school_name }}</div>
+                  <span class="booking-status {% if b.status == 'Confirmed' %}status-confirmed{% else %}status-pending{% endif %}">
+                    {% if b.status == 'Confirmed' %}✓ Confirmed{% else %}⏳ {{ b.status }}{% endif %}
+                  </span>
                 </div>
-                <div>
-                  <div class="bd-item-lbl">Class</div>
-                  <div class="bd-item-val">7th Grade</div>
-                </div>
-                <div>
-                  <div class="bd-item-lbl">Seat No.</div>
-                  <div class="bd-item-val gold">Seat 14</div>
-                </div>
-              </div>
-            </div>
- 
-            <!-- Booking 2 -->
-            <div class="booking-summary">
-              <div class="booking-top">
-                <div class="booking-school"><i class="bi bi-buildings-fill"></i> Sunrise International School</div>
-                <span class="booking-status status-pending">⏳ Pending</span>
-              </div>
-              <div class="booking-details">
-                <div>
-                  <div class="bd-item-lbl">Child</div>
-                  <div class="bd-item-val">Priya Kumar</div>
-                </div>
-                <div>
-                  <div class="bd-item-lbl">Class</div>
-                  <div class="bd-item-val">4th Grade</div>
-                </div>
-                <div>
-                  <div class="bd-item-lbl">Seat No.</div>
-                  <div class="bd-item-val gold">Seat 7</div>
+                <div class="booking-details">
+                  <div>
+                    <div class="bd-item-lbl">Child</div>
+                    <div class="bd-item-val">{{ b.child_name }}</div>
+                  </div>
+                  <div>
+                    <div class="bd-item-lbl">Class</div>
+                    <div class="bd-item-val">{{ b.class_grade }} Class</div>
+                  </div>
+                  <div>
+                    <div class="bd-item-lbl">Seat No.</div>
+                    <div class="bd-item-val gold">Seat {{ b.seat_number }}</div>
+                  </div>
                 </div>
               </div>
-            </div>
+            {% empty %}
+              <div style="text-align: center; padding: 24px; color: var(--ink-muted); font-size: 14px;">
+                No active seat bookings.
+              </div>
+            {% endfor %}
           </div>
  
           <!-- Activity Feed -->
@@ -636,45 +616,18 @@
               <div class="panel-title-text"><i class="bi bi-activity"></i> Recent Activity</div>
             </div>
             <div class="activity-feed">
-              <div class="activity-item">
-                <div class="activity-dot-wrap">
-                  <div class="activity-dot act-seat"><i class="bi bi-ticket-perforated-fill"></i></div>
-                  <div class="act-line"></div>
+              {% for act in activities %}
+                <div class="activity-item">
+                  <div class="activity-dot-wrap">
+                    <div class="activity-dot {{ act.icon }}"><i class="bi {{ act.icon_class }}"></i></div>
+                    {% if not forloop.last %}<div class="act-line"></div>{% endif %}
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-title">{{ act.title|safe }}</div>
+                    <div class="activity-time"><i class="bi bi-clock me-1"></i>{{ act.time }}</div>
+                  </div>
                 </div>
-                <div class="activity-content">
-                  <div class="activity-title">Seat booked for <strong>Aarav Kumar</strong> — Class 7th, Seat 14</div>
-                  <div class="activity-time"><i class="bi bi-clock me-1"></i>2 hours ago</div>
-                </div>
-              </div>
-              <div class="activity-item">
-                <div class="activity-dot-wrap">
-                  <div class="activity-dot act-school"><i class="bi bi-buildings-fill"></i></div>
-                  <div class="act-line"></div>
-                </div>
-                <div class="activity-content">
-                  <div class="activity-title">Added <strong>Sunrise International School</strong> to favourites</div>
-                  <div class="activity-time"><i class="bi bi-clock me-1"></i>Yesterday</div>
-                </div>
-              </div>
-              <div class="activity-item">
-                <div class="activity-dot-wrap">
-                  <div class="activity-dot act-book"><i class="bi bi-search"></i></div>
-                  <div class="act-line"></div>
-                </div>
-                <div class="activity-content">
-                  <div class="activity-title">Searched for schools in <strong>Mumbai</strong> — 12 results</div>
-                  <div class="activity-time"><i class="bi bi-clock me-1"></i>2 days ago</div>
-                </div>
-              </div>
-              <div class="activity-item">
-                <div class="activity-dot-wrap">
-                  <div class="activity-dot act-notif"><i class="bi bi-person-plus-fill"></i></div>
-                </div>
-                <div class="activity-content">
-                  <div class="activity-title">Account created and <strong>profile verified</strong></div>
-                  <div class="activity-time"><i class="bi bi-clock me-1"></i>Jan 15, 2025</div>
-                </div>
-              </div>
+              {% endfor %}
             </div>
           </div>
  
@@ -688,32 +641,24 @@
               <div class="notif-item unread">
                 <div class="notif-dot-icon" style="background:var(--gold-pale);color:#a07820;"><i class="bi bi-ticket-perforated-fill"></i></div>
                 <div class="notif-text">
-                  <div class="notif-title">Seat booking confirmed for <strong>Aarav Kumar</strong> in Class 7th</div>
-                  <div class="notif-time">2 hours ago</div>
+                  <div class="notif-title">Seat booking confirmed for your child</div>
+                  <div class="notif-time">Recently</div>
                 </div>
                 <div class="unread-pip"></div>
               </div>
               <div class="notif-item unread">
                 <div class="notif-dot-icon" style="background:var(--navy-light);color:var(--navy-mid);"><i class="bi bi-megaphone-fill"></i></div>
                 <div class="notif-text">
-                  <div class="notif-title">Admission open for new session 2025–26 at Sunrise School</div>
-                  <div class="notif-time">1 day ago</div>
-                </div>
-                <div class="unread-pip"></div>
-              </div>
-              <div class="notif-item unread">
-                <div class="notif-dot-icon" style="background:var(--success-bg);color:var(--success);"><i class="bi bi-shield-fill-check"></i></div>
-                <div class="notif-text">
-                  <div class="notif-title">Your account has been <strong>successfully verified</strong></div>
-                  <div class="notif-time">Jan 15, 2025</div>
+                  <div class="notif-title">Admission open for new academic session</div>
+                  <div class="notif-time">Yesterday</div>
                 </div>
                 <div class="unread-pip"></div>
               </div>
               <div class="notif-item">
-                <div class="notif-dot-icon" style="background:var(--navy-light);color:var(--navy-mid);"><i class="bi bi-info-circle-fill"></i></div>
+                <div class="notif-dot-icon" style="background:var(--success-bg);color:var(--success);"><i class="bi bi-shield-fill-check"></i></div>
                 <div class="notif-text">
-                  <div class="notif-title">Welcome to EduSearch! Start by searching for schools near you.</div>
-                  <div class="notif-time">Jan 15, 2025</div>
+                  <div class="notif-title">Your account profile verification successful</div>
+                  <div class="notif-time">Recently</div>
                 </div>
               </div>
             </div>
@@ -736,19 +681,19 @@
       <div class="row g-3">
         <div class="col-12">
           <label class="modal-label">Full Name</label>
-          <input class="modal-input" type="text" id="edit-name" value="Rajesh Kumar">
+          <input class="modal-input" type="text" id="edit-name" value="{{ i.parent_name }}">
         </div>
         <div class="col-md-6">
           <label class="modal-label">Email Address</label>
-          <input class="modal-input" type="email" id="edit-email" value="rajesh@email.com">
+          <input class="modal-input" type="email" id="edit-email" value="{{ i.E_mail }}">
         </div>
         <div class="col-md-6">
           <label class="modal-label">Phone Number</label>
-          <input class="modal-input" type="tel" id="edit-phone" value="+91 98765 43210">
+          <input class="modal-input" type="tel" id="edit-phone" value="{{ i.phone_no }}">
         </div>
         <div class="col-12">
           <label class="modal-label">City / Location</label>
-          <input class="modal-input" type="text" id="edit-city" value="Mumbai, Maharashtra">
+          <input class="modal-input" type="text" id="edit-city" value="{{ i.city }}">
         </div>
         <div class="col-12">
           <label class="modal-label">About / Bio</label>
@@ -760,8 +705,15 @@
       <button class="btn-modal-cancel" onclick="closeModal()">Cancel</button>
       <button class="btn-modal-save" onclick="saveProfile()">Save Changes</button>
     </div>
+    
   </div>
+  
 </div>
+
+
+{% endfor %}
+
+
  
 <!-- Toast -->
 <div class="toast-wrap">
@@ -779,15 +731,107 @@
     const phone = document.getElementById('edit-phone').value.trim();
     const city  = document.getElementById('edit-city').value.trim();
  
-    if (name)  { document.getElementById('display-name').textContent = name; document.getElementById('info-name').textContent = name; }
-    if (email) { document.getElementById('info-email').textContent = email; document.getElementById('info-email').href = 'mailto:' + email; }
-    if (phone) { document.getElementById('info-phone').textContent = phone; }
-    if (city)  { document.getElementById('info-city').textContent = city; }
- 
-    closeModal();
-    showToast('Profile updated successfully!');
+    if (!name || !email) {
+      showToast('Name and Email are required.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('email', email);
+    formData.append('phone', phone);
+    formData.append('city', city);
+    formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+    fetch('{% url "parent_edit" %}', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'success') {
+        document.getElementById('display-name').textContent = data.name;
+        document.getElementById('info-name').textContent = data.name;
+        document.getElementById('info-email').textContent = data.email;
+        document.getElementById('info-email').href = 'mailto:' + data.email;
+        document.getElementById('info-phone').textContent = data.phone;
+        document.getElementById('info-city').textContent = data.city;
+        
+        // Update first letter in avatars
+        const firstLetter = data.name.charAt(0).toUpperCase();
+        const avatarEl = document.querySelector('.big-avatar');
+        if (avatarEl) {
+          avatarEl.innerHTML = `${firstLetter} <div class="avatar-upload-btn" onclick="showToast('Upload feature coming soon!')"><i class="bi bi-camera-fill"></i></div>`;
+        }
+        const navAvatarEl = document.querySelector('.nav-avatar');
+        if (navAvatarEl) {
+          navAvatarEl.textContent = firstLetter;
+        }
+
+        closeModal();
+        showToast('Profile updated successfully!');
+      } else {
+        showToast('Error: ' + (data.message || 'Failed to update'));
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      showToast('Error updating profile.');
+    });
   }
  
+  // Handle Cover Change file upload
+  document.getElementById('cover-input').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('cover_image', file);
+    formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+    showToast('Uploading cover image...');
+
+    fetch('{% url "change_cover" %}', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'success') {
+        const coverBand = document.getElementById('cover-band');
+        coverBand.style.backgroundImage = `url('${data.cover_url}')`;
+        coverBand.style.backgroundSize = 'cover';
+        coverBand.style.backgroundPosition = 'center';
+        showToast('Cover image updated successfully!');
+      } else {
+        showToast('Error: ' + (data.message || 'Failed to upload cover'));
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      showToast('Error uploading cover image.');
+    });
+  });
+
+  // Handle Profile Sharing
+  function copyProfileLink() {
+    const profileUrl = window.location.href;
+    navigator.clipboard.writeText(profileUrl)
+      .then(() => {
+        showToast('Profile link copied to clipboard!');
+      })
+      .catch(err => {
+        console.error('Failed to copy: ', err);
+        showToast('Could not copy link.');
+      });
+  }
+
   function showToast(msg) {
     const t = document.getElementById('toast');
     document.getElementById('toast-text').textContent = msg;

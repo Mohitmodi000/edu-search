@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="100%" height="100%">
+        <defs>
+            <linearGradient id="grad" x1="0" y1="0" x2="52" y2="52" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#880e4f"/>
+                <stop offset="100%" stop-color="#490326"/>
+            </linearGradient>
+            <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+                <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.25"/>
+            </filter>
+        </defs>
+        <path d="M6 13 C6 13 6 4 26 4 C46 4 46 13 46 13 C46 29 36 41 26 47 C16 41 6 29 6 13 Z" fill="url(#grad)" stroke="#c49a2b" stroke-width="2.5" filter="url(#shadow)"/>
+        <path d="M9 14 C9 14 9 6.5 26 6.5 C43 6.5 43 14 43 14 C43 27.5 34 38 26 43.5 C18 38 9 27.5 9 14 Z" fill="none" stroke="#c49a2b" stroke-opacity="0.3" stroke-width="1"/>
+        
+        <path d="M16 26 H36 Q26 33 16 26 Z" fill="none" stroke="#c49a2b" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M26 11 C29 15 26 20 26 20 C26 20 23 15 26 11 Z" fill="#c49a2b"/>
+        <line x1="26" y1="7" x2="26" y2="4" stroke="#c49a2b" stroke-width="1.5"/>
+        
+        <rect x="15" y="37" width="22" height="6" rx="1.5" fill="#c49a2b"/>
+        <text x="26" y="42" font-family="'DM Sans', sans-serif" font-weight="800" font-size="4.8" fill="#880e4f" text-anchor="middle" letter-spacing="0.5">S24</text>
+    </svg>
